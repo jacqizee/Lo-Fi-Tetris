@@ -1,11 +1,84 @@
 
 function init() {
 
+  const mainWidth = 10
+  const mainHeight = 20
+  const nextWidth = 4
+  const nextHeight = 3
+  const mainCellCount = mainWidth * mainHeight
+  const mainCells = []
+  const nextCellCount = nextWidth * nextHeight
+  const nextCells = []
+
+  function createGrid(grid, cellCount, cellArray) {
+    for (let i = 0; i < cellCount; i++) {
+      const cell = document.createElement('div')
+      cell.innerHTML = i
+      grid.appendChild(cell)
+      cell.dataset.index = i
+      cellArray.push(cell)
+    }
+    console.log('grid-created')
+  }
+
+  function handleKeyDown(event) {
+    if (event.code === 'ArrowLeft' || event.code === 'ArrowRight') {
+      moveHorizontal()
+    }
+    if (event.code === 'ArrowUp') {
+      rotateTetromino()
+    }
+    if (event.code === 'ArrowDown') {
+      moveDown()
+    }
+  }
+
+  function rotateTetromino() {
+    console.log('rotate')
+  }
+
+  function moveHorizontal() {
+    console.log('move')
+  }
+
+  function moveDown() {
+    console.log('move down')
+  }
+
+  class Tetromino {
+    constructor(startPosition, color) {
+      this.startPosition = startPosition,
+      this.color = color
+    }
+  }
+
+  const tetriminoO = new Tetromino([4, 5, 14, 15], 'red')
+  const tetriminoL = new Tetromino([4, 14, 24, 25], 'red')
+  const tetriminoJ = new Tetromino([5, 15, 24, 25], 'red')
+  const tetriminoT = new Tetromino([4, 13, 14, 15], 'red')
+  const tetriminoZ = new Tetromino([3, 4, 14, 15], 'red')
+  const tetriminoS = new Tetromino([4, 5, 13, 14], 'red')
+  const tetriminoI = new Tetromino([3, 4, 5, 6], 'red')
 
 
 
 
+  const mainGrid = document.querySelector('#main-grid')
+  const nextGrid = document.querySelector('#next-grid')
+  const highScore = document.querySelector('#highscore')
+  let playerScore = document.querySelector('#score')
+  let playerLevel = document.querySelector('#level')
+  let playerLines = document.querySelector('#lines')
+  let currentShape
+  let nextShape
+  let intervalSpeed = 2000
+  let movementX
+  let movementY
 
+  createGrid(mainGrid, mainCellCount, mainCells)
+  createGrid(nextGrid, nextCellCount, nextCells)
+
+  window.addEventListener('keydown', handleKeyDown)
 
 }
 
@@ -21,20 +94,20 @@ function init() {
 
 
 // TODO: Variables
-// playerScore - tracks score of user
-// playerLevel - tracks level of user
-// completedLines - tracks # of completed lines
-// highScore - tracks highest local score
-// width - width of grid (10)
-// height - height of grid (20)
-// currentShape - current tetrimino shape
-// nextShape - next tetrimino shape
-// intervalSpeed - speed of shape drop, decreasing as user levels up
-// movementY = how many rows we've moved downwards
-// movementX = how many columsn we've moved left or right
+//* playerScore - tracks score of user
+//* playerLevel - tracks level of user
+//* playerLines - tracks # of completed lines
+//* highScore - tracks highest local score
+//* width - width of grid (10)
+//* height - height of grid (20)
+//* currentShape - current tetrimino shape
+//* nextShape - next tetrimino shape
+//* intervalSpeed - speed of shape drop, decreasing as user levels up
+//* movementY = how many rows we've moved downwards
+//* movementX = how many columsn we've moved left or right
 
-// TODO: Elements
-// tetrisGrid = querySelect the grid div so we can make the grid
+// Elements
+//* tetrisGrid = querySelect the grid div so we can make the grid
 
 
 // TODO: Functions

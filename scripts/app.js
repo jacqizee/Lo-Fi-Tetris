@@ -1,6 +1,8 @@
 
 function init() {
 
+  // ! Creating the Grid
+
   const mainWidth = 10
   const mainHeight = 20
   const nextWidth = 4
@@ -9,6 +11,8 @@ function init() {
   const mainCells = []
   const nextCellCount = nextWidth * nextHeight
   const nextCells = []
+  const mainGrid = document.querySelector('#main-grid')
+  const nextGrid = document.querySelector('#next-grid')
 
   function createGrid(grid, cellCount, cellArray) {
     for (let i = 0; i < cellCount; i++) {
@@ -18,8 +22,41 @@ function init() {
       cell.dataset.index = i
       cellArray.push(cell)
     }
-    console.log('grid-created')
   }
+
+  // ! Game Functionality
+
+  const startButton = document.querySelector('#start')
+  startButton.addEventListener('click', gameStart)
+  window.addEventListener('keydown', handleKeyDown)
+
+  const highScore = document.querySelector('#highscore')
+  let gameOn = false
+  let playerScore = document.querySelector('#score')
+  let playerLevel = document.querySelector('#level')
+  let playerLines = document.querySelector('#lines')
+  let currentShape = null
+  let nextShape = null
+  let intervalSpeed = 2000
+  let movementX
+  let movementY
+
+
+  class Tetromino {
+    constructor(startPosition, color) {
+      this.startPosition = startPosition,
+      this.color = color
+    }
+  }
+
+  const tetrominoO = new Tetromino([4, 5, 14, 15], 'red')
+  const tetrominoL = new Tetromino([4, 14, 24, 25], 'orange')
+  const tetrominoJ = new Tetromino([5, 15, 24, 25], 'yellow')
+  const tetrominoT = new Tetromino([4, 13, 14, 15], 'green')
+  const tetrominoZ = new Tetromino([3, 4, 14, 15], 'blue')
+  const tetrominoS = new Tetromino([4, 5, 13, 14], 'indigo')
+  const tetrominoI = new Tetromino([3, 4, 5, 6], 'violet')
+  const allTetrominos = [tetrominoO, tetrominoL, tetrominoJ, tetrominoT, tetrominoZ, tetrominoS, tetrominoI]
 
   function handleKeyDown(event) {
     if (event.code === 'ArrowLeft' || event.code === 'ArrowRight') {
@@ -31,6 +68,40 @@ function init() {
     if (event.code === 'ArrowDown') {
       moveDown()
     }
+  }
+
+  function gameStart() {
+    gameOn = true
+    startButton.disabled = true
+    releaseTetromino()
+    // setTimeout(releaseTetromino(), intervalSpeed)
+  }
+  
+  function releaseTetromino() {
+    // check for active shape
+    if (mainCells.some(cell => cell.className === 'active')) {
+      console.log('active shape on grid')
+    } else {
+      // check if currentShape exists, sets current/next shape
+      nextShape === null ? currentShape = allTetrominos[Math.floor((Math.random() * 7))] : currentShape = nextShape
+      nextShape = allTetrominos[Math.floor((Math.random() * 7))]
+      console.log(currentShape, nextShape)
+      // drop shape @ starting point
+      console.log(currentShape.startPosition)
+      currentShape.startPosition.forEach(index => {
+        mainCells[index].classList.add(currentShape.color)
+      })
+
+    }
+
+    
+    // drop shapes
+    // Interval: checks if there is an active shape in the grid,
+//    if no (ex. start of game), drop a shape at top. Shapes always start at the same positions, so we can 
+//    if yes, check if shape is touching another shape or if shape has reached the bottom of the screen OR if there is a shape in the first row of the grid
+//        if touching another shape/reached bottom, leave the shape and start dropping another shape
+//        if there is a shape currently in first row, end the game
+//        if no to both, remove current shape then return it one row lower
   }
 
   function rotateTetromino() {
@@ -45,40 +116,10 @@ function init() {
     console.log('move down')
   }
 
-  class Tetromino {
-    constructor(startPosition, color) {
-      this.startPosition = startPosition,
-      this.color = color
-    }
-  }
-
-  const tetriminoO = new Tetromino([4, 5, 14, 15], 'red')
-  const tetriminoL = new Tetromino([4, 14, 24, 25], 'red')
-  const tetriminoJ = new Tetromino([5, 15, 24, 25], 'red')
-  const tetriminoT = new Tetromino([4, 13, 14, 15], 'red')
-  const tetriminoZ = new Tetromino([3, 4, 14, 15], 'red')
-  const tetriminoS = new Tetromino([4, 5, 13, 14], 'red')
-  const tetriminoI = new Tetromino([3, 4, 5, 6], 'red')
-
-
-
-
-  const mainGrid = document.querySelector('#main-grid')
-  const nextGrid = document.querySelector('#next-grid')
-  const highScore = document.querySelector('#highscore')
-  let playerScore = document.querySelector('#score')
-  let playerLevel = document.querySelector('#level')
-  let playerLines = document.querySelector('#lines')
-  let currentShape
-  let nextShape
-  let intervalSpeed = 2000
-  let movementX
-  let movementY
+  // ! Function Execution
 
   createGrid(mainGrid, mainCellCount, mainCells)
   createGrid(nextGrid, nextCellCount, nextCells)
-
-  window.addEventListener('keydown', handleKeyDown)
 
 }
 
@@ -139,14 +180,14 @@ function init() {
 
 // TODO: Events
 // click:
-//    start button -> starts the game
+//*    start button -> starts the game
 //    replay button -> replay the game
 
 // keydown:
-//    up -> rotate element via roateElement function
-//    left -> move shape to left
-//    right -> move shape to right
-//    down -> move shape down one line
+//*    up -> rotate element via roateElement function
+//*    left -> move shape to left
+//*    right -> move shape to right
+//*    down -> move shape down one line
 
 // ? Extra Features - if there's time
 // play sound effect when a line is cleared

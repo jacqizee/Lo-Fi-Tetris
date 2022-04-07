@@ -73,6 +73,30 @@ h1 {
   border: .5px solid black;
 }
 
-.tetromino {
+.red {
   background-color: red;
+}
+
+.orange {
+ background-color: orange;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+.green {
+  background-color: green;
+}
+
+.blue {
+  background-color: blue;
+}
+
+.indigo {
+  background-color: indigo;
+}
+
+.violet {
+  background-color: violet;
 }

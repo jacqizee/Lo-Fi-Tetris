@@ -37,16 +37,16 @@ function init() {
   let playerLines = document.querySelector('#lines')
   let currentShape = null
   let nextShape = null
-  let intervalSpeed = 500
-  let movementX
-  let movementY
+  let intervalSpeed = 250
+  let timeoutInterval
 
 
   class Tetromino {
-    constructor(currentPosition, color) {
-      this.currentPosition = currentPosition,
-      this.color = color + '-active',
-      this.inactiveColor = color + '-inactive',
+    constructor(startingPosition, shape) {
+      this.currentPosition = startingPosition,
+      this.startingPosition = startingPosition,
+      this.active = shape + '-active',
+      this.inactive = shape + '-paused',
       this.nextPosition = []
     }
   }
@@ -63,138 +63,102 @@ function init() {
   function gameStart() {
     gameOn = true
     // startButton.disabled = true
-    releaseTetromino()
-    // setTimeout(releaseTetromino(), intervalSpeed)
+    // releaseTetromino()
+    setTimeout(releaseTetromino, intervalSpeed)
   }
   
-  function removeTetromino(status) {
+  function removeTetromino() {
     currentShape.currentPosition.forEach(index => {
-      mainCells[index].classList.remove(currentShape.color)
-      mainCells[index].classList.remove(status)
+      mainCells[index].classList.remove(currentShape.active)
     })
   }
 
-  function addTetromino(status) {
+  function addTetromino() {
     currentShape.currentPosition.forEach(index => {
-      mainCells[index].classList.add(currentShape.color)
-      mainCells[index].classList.add(status)
+      mainCells[index].classList.add(currentShape.active)
     })
   }
 
   function deactivateTetromino(currentPosition) {
     currentPosition.forEach(index => {
-      mainCells[index].classList.add(currentShape.inactiveColor)
-      mainCells[index].classList.remove(currentShape.activeColor)
+      mainCells[index].classList.add(currentShape.inactive)
+      mainCells[index].classList.remove(currentShape.active)
     })
   }
 
   function releaseTetromino() {
+
+    // Check for active shape
     if (mainCells.some(cell => cell.className.includes('active'))) {
-      const currentPosition = currentShape.currentPosition.map(index => index + mainWidth)
-      const nextPosition = currentShape.currentPosition.map(index => index + (mainWidth * 2))
-      console.log('current position', currentPosition, 'next position', nextPosition)
-      if (nextPosition.some(index => index >= mainCellCount)) {
-        removeTetromino('active')
-        deactivateTetromino(currentPosition)
-        console.log(currentPosition, 'reached bottom', mainCells)
-      } else if (nextPosition.some(index => mainCells[index].className.includes('inactive'))) {
-        deactivateTetromino()
-        console.log('touching a shape')
-      } else {
-        removeTetromino('active')
-        currentShape.currentPosition = currentPosition
-        addTetromino('active')
-        currentShape.nextPosition = nextPosition
-        console.log('firing')
-      }
-    } else { // if no active cells
-      if (nextShape === null) { // if no next shape aka start of game
-        currentShape = allTetrominos[Math.floor((Math.random() * 7))]
-      } else { // if yes next shape, make current shape the next shape and set new next shape
-        removeNext()
+      // check if at bottom of grid OR if next spot contains a shape
+      if (currentShape.nextPosition.some(index => index >= mainCellCount) || currentShape.nextPosition.some(index => mainCells[index].className.includes('paused'))) {
+        removeTetromino()
+        deactivateTetromino(currentShape.currentPosition)
         currentShape = nextShape
+        console.log('reach bottom/other shape')
+      } else { // if both conditions above are false, lower shape by one row
+        removeTetromino()
+        currentShape.currentPosition = currentShape.nextPosition
+        addTetromino()
+        currentShape.nextPosition = currentShape.currentPosition.map(index => index + mainWidth)
+        console.log('lowered by one row')
+      }
+      timeoutInterval = setTimeout(releaseTetromino, intervalSpeed)
+    } else { // if no active cells
+      console.log('releaseTetromino does not include active')
+      nextShape === null ? currentShape = allTetrominos[Math.floor((Math.random() * 7))] : currentShape = nextShape
+      if (nextShape !== null) {
+        removeNext()
       }
       nextShape = allTetrominos[Math.floor((Math.random() * 7))]
+      nextShape.currentPosition = nextShape.startingPosition
+      console.log(currentShape, nextShape)
       previewNext()
-      addTetromino('active')
+      if (nextShape.currentPosition.some(index => mainCells[index].className.includes('inactive'))) {
+        console.log('no room for new shape! end of game')
+        window.alert('Game over!')
+        nextShape = ''
+      }
+      addTetromino()
+      currentShape.nextPosition = currentShape.currentPosition.map(index => index + mainWidth)
+      timeoutInterval = setTimeout(releaseTetromino, intervalSpeed)
+      console.log('no active cells, shape dropped')
     }
   }
 
-  // function releaseTetromino() {
-  //   if (mainCells.some(cell => cell.className.includes('active'))) {
-  //     const pendingPosition = currentShape.currentPosition.map(index => index + mainWidth)
-  //     if (pendingPosition.some(item => item >= mainCellCount - mainWidth)) {
-  //       addTetromino('inactive')
-  //       console.log('pending', pendingPosition, 'current', currentShape.currentPosition, 'bottom reached', mainCells)
-  //     }
-
-  //     currentShape.nextPosition = pendingPosition // if active shape exists, map next position one row down
-  //     removeTetromino('active')
-  //     currentShape.currentPosition = currentShape.nextPosition
-      
-  //     setTimeout(releaseTetromino, intervalSpeed)
-  //   } else {
-
-  //     // check if currentShape exists, sets current/next shape
-  //     nextShape === null ? currentShape = allTetrominos[Math.floor((Math.random() * 7))] : currentShape = nextShape
-  //     nextShape = allTetrominos[Math.floor((Math.random() * 7))]
-      
-  //     removeNext()
-  //     previewNext()
-  //   }
-  //   addTetromino('active')
-  // }
-
-
-        // if next position is at bottom {
-      //   remove current shape, add next shape but with inactive
-      //   remove active class, add inactive class
-      // } if next position is overlapping an inactive shape {
-      //     remove active class, add inactive class
-      //   } 
-        
-      // } 
-    // Interval: checks if there is an active shape in the grid,
+  // Interval: checks if there is an active shape in the grid,
   //   * if no (ex. start of game), drop a shape at top. Shapes always start at the same positions, so we can 
-  //    if yes, check if shape is touching another shape or if shape has reached the bottom of the screen OR if there is a shape in the first row of the grid
-  //        if touching another shape/reached bottom, leave the shape and start dropping another shape
+  //    * if yes, check if shape is touching another shape or if shape has reached the bottom of the screen OR if there is a shape in the first row of the grid
+  //       * if touching another shape/reached bottom, leave the shape and start dropping another shape
   //        if there is a shape currently in first row, end the game
-  //        if no to both, remove current shape then return it one row lower
+  //      *  if no to both, remove current shape then return it one row lower
     
   function previewNext() {
-    nextShape.currentPosition.forEach(index => {
+    const adjustedTetro = nextShape.startingPosition.map(index => {
       if (index > 20) {
-        index -= 15
+        return index -= 15
       } else if (index > 10) {
-        index -= 9
+        return index -= 9
       } else {
-        index -= 3
+        return index -= 3
       }
-      nextCells[index].classList.add(nextShape.color)
     })
+    adjustedTetro.forEach(index => nextCells[index].classList.add(nextShape.active))
+    console.log('preview next shape fired')
   }
 
   function removeNext() {
-    if (nextShape !== null) {
-      nextShape.currentPosition.forEach(index => {
-        if (index > 20) {
-          index -= 15
-        } else if (index > 10) {
-          index -= 9
-        } else {
-          index -= 3
-        }
-        nextCells[index].classList.remove(nextShape.color)
-      })
-    }
+    console.log('next shape removed')
+    nextCells.forEach(index => index.classList.remove(nextShape.active))
   }
 
-
   function handleKeyDown(event) {
-    if (event.code === 'ArrowUp') {
-      rotateTetromino()
-    } else if (event.code === 'ArrowDown' || event.code === 'ArrowRight' || event.code === 'ArrowLeft') {
-      moveTetromino(event.code)
+    if (mainCells.some(cell => cell.className.includes('active'))) {
+      if (event.code === 'ArrowUp') {
+        rotateTetromino()
+      } else if (event.code === 'ArrowDown' || event.code === 'ArrowRight' || event.code === 'ArrowLeft') {
+        moveTetromino(event.code)
+      }
     }
   }
 
@@ -203,19 +167,33 @@ function init() {
   }
 
   function moveTetromino(arrowDirection) {
-    console.log('current position:', currentShape.currentPosition)
-    console.log('next position:', currentShape.nextPosition)
-    removeTetromino('active')
-    if (arrowDirection === 'ArrowRight' && !currentShape.currentPosition.some(index => (index % mainWidth) === 9)) {
-      currentShape.currentPosition = currentShape.currentPosition.map(index => index + 1)
+    let shifted
+    if (currentShape.nextPosition.every(index => index < mainCellCount)) {
+      removeTetromino()
+      if (arrowDirection === 'ArrowDown') {
+        shifted = currentShape.currentPosition.map(index => index + mainWidth)
+        if (!shifted.some(index => mainCells[index].className.includes('paused'))) {
+          currentShape.currentPosition = currentShape.nextPosition
+        }
+        console.log('moved down')
+      }
+      if (arrowDirection === 'ArrowRight' && !currentShape.currentPosition.some(index => (index % mainWidth) === 9)) {
+        shifted = currentShape.currentPosition.map(index => index + 1)
+        if (!shifted.some(index => mainCells[index].className.includes('paused'))) {
+          currentShape.currentPosition = currentShape.currentPosition.map(index => index + 1)
+        }
+        console.log('moved right')
+      }
+      if (arrowDirection === 'ArrowLeft' && !currentShape.currentPosition.some(index => (index % mainWidth) === 0)) {
+        shifted = currentShape.currentPosition.map(index => index - 1)
+        if (!shifted.some(index => mainCells[index].className.includes('paused'))) {
+          currentShape.currentPosition = currentShape.currentPosition.map(index => index - 1)
+        }
+        console.log('moved left')
+      }
+      currentShape.nextPosition = currentShape.currentPosition.map(index => index + mainWidth)
+      addTetromino()
     }
-    if (arrowDirection === 'ArrowLeft' && !currentShape.currentPosition.some(index => (index % mainWidth) === 0)) {
-      currentShape.currentPosition = currentShape.currentPosition.map(index => index - 1)
-    }
-    if (arrowDirection === 'ArrowDown' && currentShape.currentPosition.every(index => index < mainCellCount - mainWidth)) {
-      currentShape.currentPosition = currentShape.currentPosition.map(index => index + 10)
-    }
-    addTetromino()
   }
 
   // ! Function Execution

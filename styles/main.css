@@ -57,7 +57,8 @@ h1 {
 #main-grid div {
   width: calc(100% / 10);
   height: calc(100% / 20);
-  border: .5px solid black
+  border: .5px solid lightgray;
+  border-radius: 2px;
 }
 
 #next-grid {
@@ -101,30 +102,30 @@ h1 {
   background-color: #CC99C9;
 }
 
-.o-inactive {
-  background-color: #FF6663;
+.o-paused {
+  background-color: #C23B23;
 }
 
-.l-inactive {
-  background-color: #FEB144;
+.l-paused {
+  background-color: #F39A27;
 }
 
-.j-inactive {
-  background-color: #FDFD97;
+.j-paused {
+  background-color: #EADA52;
 }
 
-.t-inactive {
-  background-color: #9EE09E;
+.t-paused {
+  background-color: #03C03C;
 }
 
-.z-inactive {
-  background-color: #9EC1CF;
+.z-paused {
+  background-color: #579ABE;
 }
 
-.s-inactive {
-  background-color: #af99cc;
+.s-paused {
+  background-color: #976ED7;
 }
 
 .i-inactive {
-  background-color: #CC99C9;
+  background-color: rgb(176, 153, 204);
 }

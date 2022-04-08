@@ -74,7 +74,8 @@ function init() {
   function gameStart() {
     gameOn = true
     // startButton.disabled = true
-    setTimeout(releaseTetromino(), intervalSpeed)
+    releaseTetromino()
+    // setTimeout(releaseTetromino(), intervalSpeed)
   }
   
   function releaseTetromino() {
@@ -106,10 +107,9 @@ function init() {
     }
 
     addTetromino()
-
   }
     
-    // Interval: checks if there is an active shape in the grid,
+  // Interval: checks if there is an active shape in the grid,
   //    if no (ex. start of game), drop a shape at top. Shapes always start at the same positions, so we can 
   //    if yes, check if shape is touching another shape or if shape has reached the bottom of the screen OR if there is a shape in the first row of the grid
   //        if touching another shape/reached bottom, leave the shape and start dropping another shape
@@ -121,7 +121,7 @@ function init() {
     currentShape.currentPosition.forEach(index => {
       mainCells[index].classList.remove(currentShape.color)
       mainCells[index].classList.remove('active')
-    }) // remove active shape in old position
+    })
   }
 
   function addTetromino() {
@@ -136,6 +136,7 @@ function init() {
   }
 
   function moveHorizontal(arrowDirection) {
+    console.log(currentShape.currentPosition)
     if (arrowDirection === 'ArrowRight' && !currentShape.currentPosition.some(index => (index % mainWidth) === 9)) {
       removeTetromino()
       currentShape.currentPosition = currentShape.currentPosition.map(index => index + 1)
@@ -150,7 +151,11 @@ function init() {
   }
 
   function moveDown() {
-    currentShape.currentPosition
+    if (currentShape.currentPosition.every(index => index < mainCellCount - mainWidth)) {
+      removeTetromino()
+      currentShape.currentPosition = currentShape.currentPosition.map(index => index + 10)
+      addTetromino()
+    }
   }
 
   // ! Function Execution

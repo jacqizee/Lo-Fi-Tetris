@@ -73,30 +73,58 @@ h1 {
   border: .5px solid black;
 }
 
-.red {
-  background-color: red;
+.o-active {
+  background-color: #FF6663;
 }
 
-.orange {
- background-color: orange;
+.l-active {
+  background-color: #FEB144;
 }
 
-.yellow {
-  background-color: yellow;
+.j-active {
+  background-color: #FDFD97;
 }
 
-.green {
-  background-color: green;
+.t-active {
+  background-color: #9EE09E;
 }
 
-.blue {
-  background-color: blue;
+.z-active {
+  background-color: #9EC1CF;
 }
 
-.indigo {
-  background-color: indigo;
+.s-active {
+  background-color: #af99cc;
 }
 
-.violet {
-  background-color: violet;
+.i-active {
+  background-color: #CC99C9;
+}
+
+.o-inactive {
+  background-color: #FF6663;
+}
+
+.l-inactive {
+  background-color: #FEB144;
+}
+
+.j-inactive {
+  background-color: #FDFD97;
+}
+
+.t-inactive {
+  background-color: #9EE09E;
+}
+
+.z-inactive {
+  background-color: #9EC1CF;
+}
+
+.s-inactive {
+  background-color: #af99cc;
+}
+
+.i-inactive {
+  background-color: #CC99C9;
 }

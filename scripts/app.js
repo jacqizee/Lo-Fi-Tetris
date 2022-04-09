@@ -114,10 +114,13 @@ function init() {
       nextShape.currentPosition = nextShape.startingPosition
       console.log(currentShape, nextShape)
       previewNext()
-      if (nextShape.currentPosition.some(index => mainCells[index].className.includes('inactive'))) {
+      console.log('top row', nextShape.startingPosition.some(index => mainCells[index].className.includes('paused')))
+      if (nextShape.startingPosition.some(index => mainCells[index].className.includes('paused'))) {
         console.log('no room for new shape! end of game')
+        addTetromino()
         window.alert('Game over!')
-        nextShape = ''
+        clearInterval(timeoutInterval)
+        return
       }
       addTetromino()
       currentShape.nextPosition = currentShape.currentPosition.map(index => index + mainWidth)

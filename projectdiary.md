@@ -9,3 +9,6 @@ Day 1: start of coding
     The rotate, clear, and shift functions are still actively in the back of my mind, and the general idea is getting clearer and clearer. Can't wait to start cracking into them tomorrow!
 
 Day 2:
+    I spend the day fixing bugs I had found with the drop interval and the horizontal/vertical piece movement. While pieces weren't overlapping if you let the interval run, I found that moving the pieces via the arrow buttons led to pieces overlapping. I fixed this by more clearly defining the current position of the tetromino globally so that the current position and next position is always updated when a piece is moved.
+    I also updated the drop piece function to pause tetrominos once they touch the bottom of the grid, or if their next position would overlap with an paused tetromino.
+

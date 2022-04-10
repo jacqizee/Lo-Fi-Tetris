@@ -64,8 +64,6 @@ function init() {
   const tetrominoI = new Tetromino([3, 4, 5, 6], 'i')
   const allTetrominos = [tetrominoO, tetrominoL, tetrominoJ, tetrominoT, tetrominoZ, tetrominoS, tetrominoI]
 
-  console.log(allTetrominos)
-
   function gameStart() {
     gameOn = true
     startButton.disabled = true
@@ -113,7 +111,6 @@ function init() {
       } else { // if both conditions above are false, lower shape by one row
         removeTetromino()
         currentShape.currentPosition = currentShape.nextPosition
-
         addTetromino()
         currentShape.nextPosition = currentShape.currentPosition.map(index => index + mainWidth)
         console.log('lowered by one row')
@@ -125,15 +122,13 @@ function init() {
       if (nextShape !== null) {
         removeNext()
       }
-      // nextShape = allTetrominos[Math.floor((Math.random() * 7))]
-      nextShape = allTetrominos[0]
+      nextShape = allTetrominos[Math.floor((Math.random() * 7))]
       nextShape.currentPosition = nextShape.startingPosition
       nextShape.rotationPosition = nextShape.rotationArray
       console.log(currentShape, nextShape)
       previewNext()
       if (nextShape.startingPosition.some(index => mainCells[index].className.includes('paused'))) {
         addTetromino()
-        console.log('no room for new shape! end of game')
         gamePause()
         window.alert('Game over!')
         return
@@ -157,11 +152,9 @@ function init() {
       }
     })
     indexForPreview.forEach(index => nextCells[index].classList.add(nextShape.active))
-    console.log('preview next shape fired')
   }
 
   function removeNext() {
-    console.log('next shape removed')
     nextCells.forEach(index => index.classList.remove(nextShape.active))
   }
 
@@ -189,21 +182,18 @@ function init() {
           if (!shifted.some(index => mainCells[index].className.includes('paused'))) {
             currentShape.currentPosition = currentShape.nextPosition
           }
-          console.log('moved down')
         }
         if (arrowDirection === 'ArrowRight' && !currentShape.currentPosition.some(index => (index % mainWidth) === 9)) {
           shifted = currentShape.currentPosition.map(index => index + 1)
           if (!shifted.some(index => mainCells[index].className.includes('paused'))) {
             currentShape.currentPosition = currentShape.currentPosition.map(index => index + 1)
           }
-          console.log('moved right')
         }
         if (arrowDirection === 'ArrowLeft' && !currentShape.currentPosition.some(index => (index % mainWidth) === 0)) {
           shifted = currentShape.currentPosition.map(index => index - 1)
           if (!shifted.some(index => mainCells[index].className.includes('paused'))) {
             currentShape.currentPosition = currentShape.currentPosition.map(index => index - 1)
           }
-          console.log('moved left')
         }
         currentShape.nextPosition = currentShape.currentPosition.map(index => index + mainWidth)
         addTetromino()

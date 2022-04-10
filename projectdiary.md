@@ -12,3 +12,13 @@ Day 2:
     I spend the day fixing bugs I had found with the drop interval and the horizontal/vertical piece movement. While pieces weren't overlapping if you let the interval run, I found that moving the pieces via the arrow buttons led to pieces overlapping. I fixed this by more clearly defining the current position of the tetromino globally so that the current position and next position is always updated when a piece is moved.
     I also updated the drop piece function to pause tetrominos once they touch the bottom of the grid, or if their next position would overlap with an paused tetromino.
 
+Day 3:
+    Today I updated the interval to end the game when the grid is filled and there is no space for the next shape to drop. I spent the rest of the day taking my mind off the project for a bit, though did spend a fair amount of time brainstorming ideas on how to approach rotating tetronimos and clearing lines when filled.
+
+Day 4:
+    To wrap up the weekend, I spent a fair amount of time today still juggling ideas about tetromino rotation (stuck between either trying to create a function that will rotate all pieces with some type of math, or by individually typing in each roation shape's array... hard coding it with the individual arrays is less flexible and would take more time, but would probably be the easier approach in terms of complexity).
+    To take my mind off rotation, I finished the day by writing a function to clear lines when they're filled with tetrominos, then shifting all the lines above it down to fill the space. Took a bit of thought but was able to tackle this with a couple of while loops.
+    Additionally, I added in a pause button (realized it would be an easy feature to implement, and also found it helpful to be able to pause the game so I could take a look at the console at a specific moment in time).
+
+Day 5:
+    The deadline is tomorrow, and I have all 

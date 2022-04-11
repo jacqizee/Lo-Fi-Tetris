@@ -8,19 +8,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rubik+Puddles&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Rajdhani:wght@300&display=swap" rel="stylesheet">
   <title>Tetris</title>
 </head>
 <body>
   <h1>Tetris</h1>
   <main>
     <section id="left">
-      <button id="start">Start</button>
-      <button id="pause">Pause</button>
+      <div id="buttons">
+        <button id="start">Start</button>
+        <button id="pause">Pause</button>
+      </div>
       <h3>Score: <span id="score">0</span></h3>
       <h3>Level: <span id="level">0</span></h3>
       <h3>Lines: <span id="lines">0</span></h3>
-      <h4>High Score: <span id="highscore">0</span></h4>
     </section>
     <section id="main-container">
       <div id="main-grid">
@@ -34,6 +35,7 @@
 
         </div>
       </div>
+      <h4>High Score: <span id="highscore">0</span></h4>
     </section>
   </main>
 </body>

@@ -4,6 +4,8 @@
 
 body {
   background-color: #f8f7ff;
+  background-image: url('../media/daisy-background.jpeg');
+  background-size: cover;
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -110,7 +112,7 @@ h3, h4 {
 button {
   display: block;
   color: #fff;
-  background-color: #A6A0DE;
+  background: #A6A0DE;
   border: 1px solid #9a92d9;
   border-radius: 10px;
   width: 100px;
@@ -128,7 +130,13 @@ button:active {
 
 button:hover {
   cursor: crosshair;
-  background-color: linear-gradient(#CA8799, #A6A0DE);
+  transition: background 2s;
+  background: #CA8799;
+}
+
+@keyframes button-background {
+  from {background: linear-gradient(#A6A0DE, #CA8799);}
+  to {background: linear-gradient(#CA8799, #A6A0DE);}
 }
 
 .o-active {

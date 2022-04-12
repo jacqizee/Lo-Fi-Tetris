@@ -22,7 +22,14 @@ Day 4:
     Additionally, I added in a pause button (realized it would be an easy feature to implement, and also found it helpful to be able to pause the game so I could take a look at the console at a specific moment in time).
 
 Day 5:
+    Today I was still strategizing my plan for how to approach rotating shapes. The two options I've boiled it down to is either 1. hard-coding each rotation and keeping track of the active tetromino's state of rotation, or 2. creating some time of moving grid/matrix that I can use to rotate pieces no matter where they are and what position.
+    To take my mind off rotation for a day, I allowed today to be more of a CSS-heavy day, so I focused more on styling and adding sound effects.
+
+Day 6:
+    Today, I finally allowed myself to tackle rotations, and I decided given I still have a two days before the deadline, I would try with the more complex method of creating a matrix of sorts that would allow me to rotate any piece no matter the current rotation state it was in. After a lot of trial and error (and lots of pen on paper to figure out working equations), I was able to create this matrix and rotate pieces! I think while this method took a lot longer to get to, the code itself was relatively simple to implement since I had really mulled over this for days (though I definitely was pulling my hair out at times! Definitely a rollercoaster of feelings of success and failure).
     
+
+Day 7:
 
 
 

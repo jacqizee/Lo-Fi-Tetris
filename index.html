@@ -12,16 +12,19 @@
   <title>Tetris</title>
 </head>
 <body>
-  <h1>Tetris</h1>
+  <h1>[ Tetris ]</h1>
   <main>
     <section id="left">
       <div id="buttons">
         <button id="start">Start</button>
         <button id="reset">Restart</button>
       </div>
-      <h3>Score: <span id="score">0</span></h3>
-      <h3>Level: <span id="level">0</span></h3>
-      <h3>Lines: <span id="lines">0</span></h3>
+      <div id="stats">
+        <h3>Score: <span id="score">0</span></h3>
+        <h3>Level: <span id="level">1</span></h3>
+        <h3>Lines: <span id="lines">0</span></h3>
+      </div>
+      <h4>High Score: <span id="high-score">0</span></h4>
     </section>
     <section id="main-container">
       <div id="main-grid">
@@ -29,14 +32,21 @@
       </div>
     </section>
     <section id="right">
-      <h2>Next Block</h2>
+      <h2>Up Next</h2>
       <div id="next-container">
         <div id="next-grid">
 
         </div>
       </div>
-      <h4>High Score: <span id="highscore">0</span></h4>
+      <img src="./media/jumping-cat.gif" alt="jumping-cat-gif" class="gif">
     </section>
+    
   </main>
+  <div class="modal-container">
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <h2>Game Over!</h2>
+    </div>
+  </div>
 </body>
 </html>

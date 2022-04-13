@@ -1,3 +1,4 @@
+/* eslint-disable no-inner-declarations */
 
 function init() {
 
@@ -17,8 +18,8 @@ function init() {
   function createGrid(grid, cellCount, cellArray) {
     for (let i = 0; i < cellCount; i++) {
       const cell = document.createElement('div')
-      cell.innerHTML = i
       grid.appendChild(cell)
+      cell.innerHTML = i
       cell.dataset.index = i
       cellArray.push(cell)
     }
@@ -36,6 +37,19 @@ function init() {
   const audioRotate = new Audio('./media/movement.wav')
   const audioMovement = new Audio('./media/rotateshape.wav')
 
+  // ! Game Over Modal
+
+  const modalContainer = document.querySelector('.modal-container')
+  const modalClose = document.querySelector('.modal-close')
+  modalClose.addEventListener('click', function() {
+    modalContainer.style.display = 'none'
+  })
+  window.addEventListener('click', function(event) {
+    if (event.target === modalContainer) {
+      modalContainer.style.display = 'none'
+    }
+  })
+
   // ! Game Functionality
 
   const startButton = document.querySelector('#start')
@@ -44,36 +58,47 @@ function init() {
   resetButton.addEventListener('click', gameReset)
   window.addEventListener('keydown', handleKeyDown)
 
-  let highScore = document.querySelector('#highscore')
+  let highScore = document.querySelector('#high-score')
   let gameOn = false
   let playerScore = 0
-  let playerLevel = 0
+  let playerLevel = 1
+  let pointsToLevel = 250
   let playerLines = 0
   let currentShape = null
   let nextShape = null
-  let intervalSpeed = 250
+  let intervalSpeed = 750
   let timeoutInterval
-  let xChange = 0
 
   class Tetromino {
     constructor(startingPosition, shape) {
       this.currentPosition = startingPosition,
       this.startingPosition = startingPosition,
       this.nextPosition = [],
+      this.shape = shape,
       this.active = shape + '-active',
       this.inactive = shape + '-paused',
       this.startingRotationPosition = [3, 4, 5, 6]
     }
   }
 
-  const tetrominoO = new Tetromino([4, 5, 14, 15], 'o')
-  const tetrominoL = new Tetromino([4, 14, 24, 25], 'l')
-  const tetrominoJ = new Tetromino([5, 15, 24, 25], 'j')
-  const tetrominoT = new Tetromino([4, 13, 14, 15], 't')
-  const tetrominoZ = new Tetromino([4, 5, 15, 16], 'z')
-  const tetrominoS = new Tetromino([4, 5, 13, 14], 's')
-  const tetrominoI = new Tetromino([3, 4, 5, 6], 'i')
-  const allTetrominos = [tetrominoO, tetrominoL, tetrominoJ, tetrominoT, tetrominoZ, tetrominoS, tetrominoI]
+  function generateTetro() {
+    switch (Math.floor((Math.random() * 7))) {
+      case 0:
+        return new Tetromino([4, 5, 14, 15], 'o')
+      case 1:
+        return new Tetromino([4, 14, 24, 25], 'l')
+      case 2:
+        return new Tetromino([5, 15, 24, 25], 'j')
+      case 3:
+        return new Tetromino([4, 13, 14, 15], 't')
+      case 4:
+        return new Tetromino([4, 5, 15, 16], 'z')
+      case 5:
+        return new Tetromino([4, 5, 13, 14], 's')
+      case 6:
+        return new Tetromino([3, 4, 5, 6], 'i')
+    }
+  }
 
   // ! Functions
 
@@ -81,7 +106,6 @@ function init() {
     if (startButton.innerHTML === 'Pause') {
       gamePause()
     } else if (startButton.innerHTML === 'Start') {
-      console.log(currentShape, nextShape)
       gameOn = true
       startButton.innerHTML = 'Pause'
       setTimeout(releaseTetromino, intervalSpeed)
@@ -98,26 +122,25 @@ function init() {
   }
 
   function gameReset() {
+    gameOn = false
     gamePause()
     resetStats()
     updateSpans()
-    gameOn = false
     removeTetromino()
     nextShape = null
     currentShape = null
     mainCells.forEach(cell => cell.className = '')
     nextCells.forEach(cell => cell.className = '')
-    console.log(mainCells, nextCells)
   }
 
   function resetStats() {
     gameOn = false
     playerScore = 0
-    playerLevel = 0
+    playerLevel = 1
+    pointsToLevel = 250
     playerLines = 0
-    intervalSpeed = 250
+    intervalSpeed = 750
     timeoutInterval
-    xChange = 0
   }
   
   function addTetromino() {
@@ -127,8 +150,8 @@ function init() {
     currentShape.nextPosition = currentShape.currentPosition.map(index => index + mainWidth)
   }
 
-  function deactivateTetromino(currentPosition) {
-    currentPosition.forEach(index => {
+  function deactivateTetromino() {
+    currentShape.currentPosition.forEach(index => {
       mainCells[index].classList.add(currentShape.inactive)
       mainCells[index].classList.remove(currentShape.active)
     })
@@ -146,11 +169,10 @@ function init() {
       // check if at bottom of grid OR if next spot contains a shape
       if (currentShape.nextPosition.some(index => index >= mainCellCount) || currentShape.nextPosition.some(index => mainCells[index].className.includes('paused'))) {
         removeTetromino()
-        deactivateTetromino(currentShape.currentPosition)
+        deactivateTetromino()
         audioNoMovement.play()
         clearLine()
         currentShape = nextShape
-        xChange = 0
       } else { // if both conditions above are false, lower shape by one row
         removeTetromino()
         currentShape.currentPosition = currentShape.nextPosition
@@ -158,10 +180,9 @@ function init() {
       }
       timeoutInterval = setTimeout(releaseTetromino, intervalSpeed)
     } else { // if no active cells
-      nextShape === null ? currentShape = allTetrominos[Math.floor((Math.random() * allTetrominos.length))] : currentShape = nextShape
+      nextShape === null ? currentShape = generateTetro() : currentShape = nextShape
       removeNext()
-      nextShape = allTetrominos[Math.floor((Math.random() * allTetrominos.length))]
-      nextShape.currentPosition = nextShape.startingPosition
+      nextShape = generateTetro()
       previewNext()
       if (currentShape.startingPosition.some(index => mainCells[index].className.includes('paused'))) {
         audioGameOver.play()
@@ -169,7 +190,7 @@ function init() {
           mainCells[index].classList.add(currentShape.active)
         })
         gamePause()
-        window.alert('Game over!')
+        modalContainer.style.display = 'block'
         startButton.innerHTML = 'Replay'
         return
       }
@@ -210,68 +231,102 @@ function init() {
   }
 
   function rotateTetromino() {
-    const rotationArray = []
-    const rotatedArray = [[], [], [], []]
-    const yChange = Math.floor(currentShape.currentPosition[0] / mainWidth)
-    const changeInPosition = (yChange * mainWidth) + xChange
-
-    // Create Inital Rotation Array
-    rotationArray.push(currentShape.startingRotationPosition.map(index => index + changeInPosition),
-      currentShape.startingRotationPosition.map(index => index + changeInPosition + mainWidth),
-      currentShape.startingRotationPosition.map(index => index + changeInPosition + mainWidth * 2),
-      currentShape.startingRotationPosition.map(index => index + changeInPosition + mainWidth * 3))
-    const maxIndex = rotationArray.length - 1
-    
-    // Create Rotated Array (rotates the inital Rotation Array clockwise)
-    for (let i = 0; i < rotationArray.length; i++) {
-      rotatedArray[0].push(rotationArray[0][i] + (maxIndex * ((maxIndex * i) + 1)))
-      rotatedArray[1].push(rotationArray[1][i] + ((i - 1) * 10) + -(i - 2))
-      rotatedArray[2].push(rotationArray[2][i] + ((i - 2) * 10) + -(i - 1))
-      rotatedArray[3].push(rotationArray[3][i] + (maxIndex * ((maxIndex * (i - maxIndex)) - 1)))
-    }
-    
-    for (let i = 0; i < 4; i++) {
-      removeTetromino()
-      if (rotationArray[0].includes(currentShape.currentPosition[i])) {
-        currentShape.currentPosition[i] = rotatedArray[0][rotationArray[0].indexOf(currentShape.currentPosition[i])]
-      } else if (rotationArray[1].includes(currentShape.currentPosition[i])) {
-        currentShape.currentPosition[i] = rotatedArray[1][rotationArray[1].indexOf(currentShape.currentPosition[i])]
-      } else if (rotationArray[2].includes(currentShape.currentPosition[i])) {
-        currentShape.currentPosition[i] = rotatedArray[2][rotationArray[2].indexOf(currentShape.currentPosition[i])]
-      } else if (rotationArray[3].includes(currentShape.currentPosition[i])) {
-        currentShape.currentPosition[i] = rotatedArray[3][rotationArray[3].indexOf(currentShape.currentPosition[i])]
+    if (gameOn) {
+      if (currentShape.shape === 'o') {
+        return
       }
+      const rotationArray = []
+      const rotatedArray = [[], [], [], []]
+      const yChange = Math.floor(currentShape.currentPosition[0] / mainWidth)
+      let tempPosition = currentShape.currentPosition.slice()
+      let rotationIndex = []
+      currentShape.currentPosition.forEach(index => rotationIndex.push(index % 10))
+      rotationIndex = rotationIndex.sort()
+      let lowestColumn = rotationIndex[0]
+
+      lowestColumn <= mainWidth - currentShape.currentPosition.length ? lowestColumn += yChange * mainWidth : lowestColumn = mainWidth - currentShape.currentPosition.length + (yChange * mainWidth)
+
+      const rotationArrayBase = [lowestColumn, lowestColumn + 1, lowestColumn + 2, lowestColumn + 3]
+      removeTetromino()
+
+      // Create Inital Rotation Array
+      rotationArray.push(rotationArrayBase,
+        rotationArrayBase.map(index => index + mainWidth),
+        rotationArrayBase.map(index => index + (mainWidth * 2)),
+        rotationArrayBase.map(index => index + (mainWidth * 3)))
+
+      console.log('rotation array', rotationArray, 'current position', currentShape.currentPosition)
+      // Create Rotated Array (rotates the inital Rotation Array counter-clockwise)
+      const maxIndex = rotationArray.length - 1
+      for (let i = 0; i < rotationArray.length; i++) {
+        rotatedArray[0].push(rotationArray[0][i] + (maxIndex * ((maxIndex * i) + 1)))
+        rotatedArray[1].push(rotationArray[1][i] + ((i - 1) * 10) + -(i - 2))
+        rotatedArray[2].push(rotationArray[2][i] + ((i - 2) * 10) + -(i - 1))
+        rotatedArray[3].push(rotationArray[3][i] + (maxIndex * ((maxIndex * (i - maxIndex)) - 1)))
+      }
+      console.log('rotated array', rotatedArray)
+
+      console.log('current shape before adjusting', currentShape.currentPosition)
+      // Update Current Position to Rotated Position
+      for (let i = 0; i < rotationArray.length; i++) {
+        if (rotationArray[0].includes(tempPosition[i])) {
+          tempPosition[i] = rotatedArray[0][rotationArray[0].indexOf(tempPosition[i])]
+        } else if (rotationArray[1].includes(tempPosition[i])) {
+          tempPosition[i] = rotatedArray[1][rotationArray[1].indexOf(tempPosition[i])]
+        } else if (rotationArray[2].includes(tempPosition[i])) {
+          tempPosition[i] = rotatedArray[2][rotationArray[2].indexOf(tempPosition[i])]
+        } else if (rotationArray[3].includes(tempPosition[i])) {
+          tempPosition[i] = rotatedArray[3][rotationArray[3].indexOf(tempPosition[i])]
+        }
+      } tempPosition.sort((a, b) => a - b)
+
+      console.log('current shape after adjusting', tempPosition)
+      
+      // Prevent Rotation Beyond Bottom of Grid
+      if (tempPosition.some(index => index > mainCellCount)) {
+        if (tempPosition.some(index => index > mainCellCount + mainWidth)) {
+          tempPosition = tempPosition.map(index => index - (mainWidth * 2))
+        } else {
+          tempPosition = tempPosition.map(index => index - mainWidth)
+        }
+      }
+
+      // Prevent Rotation if Paused Piece in the Way
+      if (!tempPosition.some(index => mainCells[index].className.includes('paused'))) {
+        currentShape.currentPosition = tempPosition
+      } else if (!tempPosition.some(index => mainCells[index + 1].className.includes('paused'))) {
+        currentShape.currentPosition = tempPosition.map(index => index + 1)
+      } else if (!tempPosition.some(index => mainCells[index - 1].className.includes('paused'))) {
+        currentShape.currentPosition = tempPosition.map(index => index - 1)
+      } else if (!tempPosition.some(index => mainCells[index + 1].className.includes('paused'))) {
+        currentShape.currentPosition = tempPosition.map(index => index + 2)
+      } else if (!tempPosition.some(index => mainCells[index - 1].className.includes('paused'))) {
+        currentShape.currentPosition = tempPosition.map(index => index - 2)
+      }
+
+      addTetromino()
+      console.log(currentShape.currentPosition, currentShape.nextPosition)
     }
-    currentShape.currentPosition.sort((a, b) => a - b)
-    currentShape.currentPosition = currentShape.currentPosition.map(index => index - mainWidth)
-    currentShape.nextPosition = currentShape.currentPosition.map(index => index + mainWidth)
-    addTetromino()
-    console.log(currentShape.currentPosition)
   }
 
   function moveTetromino(arrowDirection) {
     if (gameOn) {
-      let shifted
       if (currentShape.nextPosition.every(index => index < mainCellCount)) {
         removeTetromino()
         if (arrowDirection === 'ArrowDown') {
-          shifted = currentShape.currentPosition.map(index => index + mainWidth)
-          if (!shifted.some(index => mainCells[index].className.includes('paused'))) {
+          currentShape.currentPosition.map(index => index + mainWidth)
+          if (!currentShape.currentPosition.map(index => index + mainWidth).some(index => mainCells[index].className.includes('paused'))) {
             currentShape.currentPosition = currentShape.nextPosition
           }
         }
         if (arrowDirection === 'ArrowRight' && !currentShape.currentPosition.some(index => (index % mainWidth) === 9)) {
-          shifted = currentShape.currentPosition.map(index => index + 1)
-          if (!shifted.some(index => mainCells[index].className.includes('paused'))) {
+          if (!currentShape.currentPosition.map(index => index + 1).some(index => mainCells[index].className.includes('paused'))) {
             currentShape.currentPosition = currentShape.currentPosition.map(index => index + 1)
-            xChange += 1
           }
         }
         if (arrowDirection === 'ArrowLeft' && !currentShape.currentPosition.some(index => (index % mainWidth) === 0)) {
-          shifted = currentShape.currentPosition.map(index => index - 1)
-          if (!shifted.some(index => mainCells[index].className.includes('paused'))) {
+          if (!currentShape.currentPosition.map(index => index - 1).some(index => mainCells[index].className.includes('paused'))) {
             currentShape.currentPosition = currentShape.currentPosition.map(index => index - 1)
-            xChange -= 1
           }
         }
         addTetromino()
@@ -281,6 +336,7 @@ function init() {
 
   function clearLine() {
     const gridRows = []
+    let multiplier = 1
     for (let row = 0; row < mainCellCount; row += 10) {
       gridRows.push(mainCells.slice(row, row + mainWidth))
     }
@@ -293,7 +349,8 @@ function init() {
           }
           currentRow -= 1
         }
-        playerScore += 100
+        playerScore += 50 * multiplier
+        multiplier++
         playerLines += 1
         levelCheck()
         updateSpans()
@@ -303,21 +360,18 @@ function init() {
   }
   
   function levelCheck() {
-    if (if playerScore < 500) {
-      playerScore += 100
-    }
-    if (playerScore >= 500) {
-      playerScore 
+    if (playerScore >= pointsToLevel) {
       playerLevel++
-    }
-    if (playerScore >= 1000) {
-      playerLevel++
+      audioLevelUp.play()
+      pointsToLevel += 250
+      intervalSpeed = intervalSpeed * 0.90
     }
   }
 
   function updateSpans() {
     document.querySelector('#score').innerHTML = playerScore
     document.querySelector('#lines').innerHTML = playerLines
+    document.querySelector('#level').innerHTML = playerLevel
   }
 
 }

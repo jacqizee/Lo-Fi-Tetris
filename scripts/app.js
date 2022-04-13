@@ -1,5 +1,3 @@
-/* eslint-disable no-inner-declarations */
-
 function init() {
 
   // ! Creating the Grid
@@ -19,7 +17,6 @@ function init() {
     for (let i = 0; i < cellCount; i++) {
       const cell = document.createElement('div')
       grid.appendChild(cell)
-      cell.innerHTML = i
       cell.dataset.index = i
       cellArray.push(cell)
     }
@@ -32,11 +29,38 @@ function init() {
 
   const audioLineClear = new Audio('./media/clear-line.wav')
   const audioGameOver = new Audio('./media/game-over.wav')
-  const audioLevelUp = new Audio('./media/level-up-1.wav')
-  const audioNoMovement = new Audio('./media/no-movement.wav')
+  const audioLevelUp = new Audio('./media/level-up.wav')
+  const audioNoMovement = new Audio('./media/pause-tetro.wav')
   const audioRotate = new Audio('./media/movement.wav')
-  const audioMovement = new Audio('./media/rotateshape.wav')
+  const audioMovement = new Audio('./media/rotate-shape.wav')
+  const audioStart = new Audio('./media/game-start.wav')
+  const audioBackground = new Audio('./media/background-music.mp3')
+  audioBackground.loop = true
 
+  let musicOn
+  let musicStart = 0
+  const musicButton = document.querySelector('.music')
+  musicButton.addEventListener('click', controlMusic)
+  
+  function startMusic() {
+    musicOn = true
+    audioBackground.play()
+    audioBackground.volume = 0.25
+  }
+  
+  function controlMusic () {
+    if (musicOn === true) {
+      musicOn = false
+      audioBackground.pause()
+      musicButton.src = './media/play-button.png'
+    } else {
+      musicOn = true
+      audioBackground.play()
+      musicButton.src = './media/pause-button.png'
+    }
+    
+  }
+  
   // ! Game Over Modal
 
   const modalContainer = document.querySelector('.modal-container')
@@ -103,12 +127,17 @@ function init() {
   // ! Functions
 
   function gameStart() {
+    if (musicStart === 0) {
+      startMusic()
+      musicStart = 1
+    }
     if (startButton.innerHTML === 'Pause') {
       gamePause()
     } else if (startButton.innerHTML === 'Start') {
       gameOn = true
       startButton.innerHTML = 'Pause'
       setTimeout(releaseTetromino, intervalSpeed)
+      audioStart.play()
     } else if (startButton.innerHTML === 'Replay') {
       gameReset()
       startButton.innerHTML = 'Start'
@@ -281,7 +310,6 @@ function init() {
       } tempPosition.sort((a, b) => a - b)
 
       console.log('current shape after adjusting', tempPosition)
-      
       // Prevent Rotation Beyond Bottom of Grid
       if (tempPosition.some(index => index > mainCellCount)) {
         if (tempPosition.some(index => index > mainCellCount + mainWidth)) {

@@ -49,6 +49,7 @@ h3, h4 {
 }
 
 #left, #right {
+  margin: 15px;
   width: 15%;
   text-align: center;
   background-color: rgba(265,265,265,0.85);
@@ -61,13 +62,6 @@ h3, h4 {
   border-radius: 15px 0 15px 0;
 }
 
-#stats {
-  width: 75%;
-  margin: 15px auto;
-  padding: 5px 0;
-  background-color: rgba(265,265,265,1);
-}
-
 #center {
   width: 50%;
   height: 100%;
@@ -77,6 +71,13 @@ h3, h4 {
   margin-right: 5%;
   margin-left: 2.5%;
   border-radius: 0 15px 0 15px;
+}
+
+#stats {
+  width: 75%;
+  margin: 15px auto;
+  padding: 5px 0;
+  background-color: rgba(265,265,265,1);
 }
 
 #main-container, #next-container {
@@ -126,9 +127,9 @@ button {
   display: block;
   color: #fff;
   background: #A6A0DE;
-  border: 1px solid #9a92d9;
+  border: 5px ridge #9a92d9;
   border-radius: 10px;
-  width: 100px;
+  width: 95px;
   height: 50px;
   margin: 15px auto;
   font-family: 'Fredoka One';
@@ -143,13 +144,17 @@ button:active {
 
 button:hover {
   cursor: crosshair;
+  animation-name: button-bounce;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
   transition: background 2s;
   background: #CA8799;
 }
 
-@keyframes button-background {
-  from {background: linear-gradient(#A6A0DE, #CA8799);}
-  to {background: linear-gradient(#CA8799, #A6A0DE);}
+@keyframes button-bounce {
+  33% {font-size: 18px;}
+  66% {font-size: 20px;}
+  99% {font-size: 18px;}
 }
 
 .o-active {
@@ -244,9 +249,25 @@ button:hover {
 
 .gif {
   width: 50%;
-  margin: 0 auto;
-  margin-top: 15px;
+  margin: 25px auto;
   border: 1px dotted pink;
   border-radius: 15px;
   background-color: white;
+}
+
+.music {
+  height: 35px;
+  margin: 25px auto;
+}
+
+.music:hover {
+  animation-name: music-button;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes music-button {
+  0% {height: 35px;}
+  50% {height: 30px;}
+  100% {height: 35px;}
 }

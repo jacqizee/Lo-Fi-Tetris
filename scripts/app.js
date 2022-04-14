@@ -275,7 +275,14 @@ function init() {
 
       lowestColumn <= mainWidth - currentShape.currentPosition.length ? lowestColumn += yChange * mainWidth : lowestColumn = mainWidth - currentShape.currentPosition.length + (yChange * mainWidth)
 
-      const rotationArrayBase = [lowestColumn, lowestColumn + 1, lowestColumn + 2, lowestColumn + 3]
+      let rotationArrayBase = [lowestColumn, lowestColumn + 1, lowestColumn + 2, lowestColumn + 3]
+      if (rotationArrayBase[0] > mainWidth - 1 && !rotationArrayBase.map(index => index + mainWidth * 2).some(index => mainCells[index].className.includes('active'))) {
+        if (rotationArrayBase[0] > (mainWidth * 2) - 1 &&!rotationArrayBase.map(index => index + mainWidth).some(index => mainCells[index].className.includes('active'))) {
+          rotationArrayBase = rotationArrayBase.map(index => index - mainWidth * 2)
+        } else { 
+          rotationArrayBase = rotationArrayBase.map(index => index - mainWidth)
+        }
+      }
       removeTetromino()
 
       // Create Inital Rotation Array
@@ -284,7 +291,6 @@ function init() {
         rotationArrayBase.map(index => index + (mainWidth * 2)),
         rotationArrayBase.map(index => index + (mainWidth * 3)))
 
-      console.log('rotation array', rotationArray, 'current position', currentShape.currentPosition)
       // Create Rotated Array (rotates the inital Rotation Array counter-clockwise)
       const maxIndex = rotationArray.length - 1
       for (let i = 0; i < rotationArray.length; i++) {
@@ -293,9 +299,7 @@ function init() {
         rotatedArray[2].push(rotationArray[2][i] + ((i - 2) * 10) + -(i - 1))
         rotatedArray[3].push(rotationArray[3][i] + (maxIndex * ((maxIndex * (i - maxIndex)) - 1)))
       }
-      console.log('rotated array', rotatedArray)
 
-      console.log('current shape before adjusting', currentShape.currentPosition)
       // Update Current Position to Rotated Position
       for (let i = 0; i < rotationArray.length; i++) {
         if (rotationArray[0].includes(tempPosition[i])) {
@@ -309,7 +313,6 @@ function init() {
         }
       } tempPosition.sort((a, b) => a - b)
 
-      console.log('current shape after adjusting', tempPosition)
       // Prevent Rotation Beyond Bottom of Grid
       if (tempPosition.some(index => index > mainCellCount)) {
         if (tempPosition.some(index => index > mainCellCount + mainWidth)) {
@@ -333,7 +336,6 @@ function init() {
       }
 
       addTetromino()
-      console.log(currentShape.currentPosition, currentShape.nextPosition)
     }
   }
 

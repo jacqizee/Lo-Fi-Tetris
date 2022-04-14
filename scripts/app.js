@@ -404,7 +404,7 @@ function init() {
   }
 
   function updateSpans() {
-    document.querySelectorAll('#score').forEach(span => span.innerHTML = playerScore)
+    document.querySelectorAll('.score').forEach(span => span.innerHTML = playerScore)
     document.querySelector('#lines').innerHTML = playerLines
     document.querySelector('#level').innerHTML = playerLevel
   }

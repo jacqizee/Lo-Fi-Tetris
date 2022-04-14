@@ -239,20 +239,16 @@ button:hover {
   text-align: center;
 }
 
-.modal-content h2 {
-  margin: calc(25% / 2) auto
-}
-
-.modal-close {
-  color: #aaaaaa;
-  float: right;
-  margin-top: -18px;
-  font-size: 50px;
-  font-weight: bold;
+.modal-content p {
+  width: 100%;
 }
 
 .modal-close:hover, .modal-close:active {
   color: #3e3e3e
+}
+
+.high-score-msg {
+  display: none;
 }
 
 .gif {

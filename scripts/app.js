@@ -74,6 +74,18 @@ function init() {
     }
   })
 
+// ! High Score
+
+  let highScore
+  console.log(localStorage.getItem('highscore'))
+
+  localStorage.getItem('highscore') ? highScore = localStorage.getItem('highscore') : highScore = 0
+
+  const highScoreSpan = document.querySelector('#high-score')
+  const highScoreMsg = document.querySelector('.high-score-msg')
+  highScoreSpan.innerHTML = highScore
+  
+
   // ! Game Functionality
 
   const startButton = document.querySelector('#start')
@@ -82,11 +94,10 @@ function init() {
   resetButton.addEventListener('click', gameReset)
   window.addEventListener('keydown', handleKeyDown)
 
-  let highScore = document.querySelector('#high-score')
   let gameOn = false
   let playerScore = 0
   let playerLevel = 1
-  let pointsToLevel = 250
+  let pointsToLevel = 500
   let playerLines = 0
   let currentShape = null
   let nextShape = null
@@ -160,13 +171,14 @@ function init() {
     currentShape = null
     mainCells.forEach(cell => cell.className = '')
     nextCells.forEach(cell => cell.className = '')
+    highScoreMsg.style.display = 'none'
   }
 
   function resetStats() {
     gameOn = false
     playerScore = 0
     playerLevel = 1
-    pointsToLevel = 250
+    pointsToLevel = 500
     playerLines = 0
     intervalSpeed = 750
     timeoutInterval
@@ -213,12 +225,17 @@ function init() {
       removeNext()
       nextShape = generateTetro()
       previewNext()
-      if (currentShape.startingPosition.some(index => mainCells[index].className.includes('paused'))) {
+      if (currentShape.startingPosition.some(index => mainCells[index].className.includes('paused'))) { // Game Over
         audioGameOver.play()
         currentShape.currentPosition.forEach(index => {
           mainCells[index].classList.add(currentShape.active)
         })
         gamePause()
+        if (playerScore > highScore) {
+          localStorage.setItem('highscore', playerScore)
+          highScoreSpan.innerHTML = playerScore
+          highScoreMsg.style.display = 'block'
+        }
         modalContainer.style.display = 'block'
         startButton.innerHTML = 'Replay'
         return
@@ -277,7 +294,7 @@ function init() {
 
       let rotationArrayBase = [lowestColumn, lowestColumn + 1, lowestColumn + 2, lowestColumn + 3]
       if (rotationArrayBase[0] > mainWidth - 1 && !rotationArrayBase.map(index => index + mainWidth * 2).some(index => mainCells[index].className.includes('active'))) {
-        if (rotationArrayBase[0] > (mainWidth * 2) - 1 &&!rotationArrayBase.map(index => index + mainWidth).some(index => mainCells[index].className.includes('active'))) {
+        if (rotationArrayBase[0] > (mainWidth * 2) - 1 && !rotationArrayBase.map(index => index + mainWidth).some(index => mainCells[index].className.includes('active'))) {
           rotationArrayBase = rotationArrayBase.map(index => index - mainWidth * 2)
         } else { 
           rotationArrayBase = rotationArrayBase.map(index => index - mainWidth)
@@ -393,7 +410,7 @@ function init() {
     if (playerScore >= pointsToLevel) {
       playerLevel++
       audioLevelUp.play()
-      pointsToLevel += 250
+      pointsToLevel += 500
       intervalSpeed = intervalSpeed * 0.90
     }
   }

@@ -27,14 +27,14 @@ function init() {
 
   // ! Sound Effects
 
-  const audioLineClear = new Audio('./media/clear-line.wav')
-  const audioGameOver = new Audio('./media/game-over.wav')
-  const audioLevelUp = new Audio('./media/level-up.wav')
-  const audioNoMovement = new Audio('./media/pause-tetro.wav')
-  const audioRotate = new Audio('./media/movement.wav')
-  const audioMovement = new Audio('./media/rotate-shape.wav')
-  const audioStart = new Audio('./media/game-start.wav')
-  const audioBackground = new Audio('./media/background-music.mp3')
+  const audioLineClear = new Audio('./media/audio/clear-line.wav')
+  const audioGameOver = new Audio('./media/audio/game-over.wav')
+  const audioLevelUp = new Audio('./media/audio/level-up.wav')
+  const audioNoMovement = new Audio('./media/audio/pause-tetro.wav')
+  const audioRotate = new Audio('./media/audio/movement.wav')
+  const audioMovement = new Audio('./media/audio/rotate-shape.wav')
+  const audioStart = new Audio('./media/audio/game-start.wav')
+  const audioBackground = new Audio('./media/audio/background-music.mp3')
   audioBackground.loop = true
 
   let musicOn
@@ -64,10 +64,6 @@ function init() {
   // ! Game Over Modal
 
   const modalContainer = document.querySelector('.modal-container')
-  const modalClose = document.querySelector('.modal-close')
-  modalClose.addEventListener('click', function() {
-    modalContainer.style.display = 'none'
-  })
   window.addEventListener('click', function(event) {
     if (event.target === modalContainer) {
       modalContainer.style.display = 'none'
@@ -85,6 +81,8 @@ function init() {
 
   // ! Game Functionality
 
+  const buttons = document.querySelectorAll('button')
+  buttons.forEach(btn => btn.addEventListener('keyup', (e) => e.preventDefault()))
   const startButton = document.querySelector('#start')
   const resetButton = document.querySelector('#reset')
   startButton.addEventListener('click', gameStart)
@@ -230,6 +228,7 @@ function init() {
           highScoreSpan.innerHTML = playerScore
           highScoreMsg.style.display = 'block'
         }
+        
         modalContainer.style.display = 'block'
         startButton.innerHTML = 'Replay'
         return
@@ -272,9 +271,6 @@ function init() {
 
   function rotateTetromino() {
     if (gameOn) {
-      if (currentShape.shape === 'o') {
-        return
-      }
       const rotationArray = []
       const rotatedArray = [[], [], [], []]
       const yChange = Math.floor(currentShape.currentPosition[0] / mainWidth)
@@ -286,10 +282,10 @@ function init() {
 
       lowestColumn <= mainWidth - currentShape.currentPosition.length ? lowestColumn += yChange * mainWidth : lowestColumn = mainWidth - currentShape.currentPosition.length + (yChange * mainWidth)
 
-      // Centering Tetromino in Rotation Array to Prevent Piece Shift Right
+      // Vertically Centering Tetromino in Rotation Array to Prevent Piece Shift Right
       let rotationArrayBase = [lowestColumn, lowestColumn + 1, lowestColumn + 2, lowestColumn + 3]
       if (rotationArrayBase[0] > mainWidth - 1 && !rotationArrayBase.map(index => index + mainWidth * 2).some(index => mainCells[index].className.includes('active'))) {
-        if (rotationArrayBase[0] > (mainWidth * 2) - 1 && !rotationArrayBase.map(index => index + mainWidth).some(index => mainCells[index].className.includes('active'))) {
+        if (rotationArrayBase[0] > mainWidth * 2 - 1 && !rotationArrayBase.map(index => index + mainWidth).some(index => mainCells[index].className.includes('active'))) {
           rotationArrayBase = rotationArrayBase.map(index => index - mainWidth * 2)
         } else { 
           rotationArrayBase = rotationArrayBase.map(index => index - mainWidth)
@@ -297,11 +293,11 @@ function init() {
       }
 
       const columnThree = [rotationArrayBase[2], rotationArrayBase[2] + mainWidth, rotationArrayBase[2] + mainWidth * 2, rotationArrayBase[2] + mainWidth * 3]
-      
-      console.log(columnThree, currentShape.currentPosition)
-      if (!columnThree.some(index => mainCells[index].className.includes('active'))) {
+      const columnFour = [rotationArrayBase[3], rotationArrayBase[3] + mainWidth, rotationArrayBase[3] + mainWidth * 2, rotationArrayBase[3] + mainWidth * 3]
+
+      // Horizontally Centering Tetromino in Rotation Array to Prevent Piece Shift Right
+      if (rotationIndex[0] > 0 && rotationIndex[3] < 9 && !columnFour.some(index => mainCells[index].className.includes('active'))) {
         rotationArrayBase = rotationArrayBase.map(index => index - 1)
-        console.log('shift fired')
       }
 
       removeTetromino()
@@ -420,7 +416,7 @@ function init() {
   }
 
   function updateSpans() {
-    document.querySelector('#score').innerHTML = playerScore
+    document.querySelectorAll('#score').forEach(span => span.innerHTML = playerScore)
     document.querySelector('#lines').innerHTML = playerLines
     document.querySelector('#level').innerHTML = playerLevel
   }

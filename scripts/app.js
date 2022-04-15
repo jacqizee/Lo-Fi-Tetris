@@ -102,10 +102,8 @@ function init() {
       this.currentPosition = startingPosition,
       this.startingPosition = startingPosition,
       this.nextPosition = [],
-      this.shape = shape,
       this.active = shape + '-active',
-      this.inactive = shape + '-paused',
-      this.startingRotationPosition = [3, 4, 5, 6]
+      this.inactive = shape + '-paused'
     }
   }
 

@@ -1,11 +1,23 @@
-# Project 1: Tetris
+# Project 1: Lo-Fi Tetris
+
+## Overview
+This was the first project for the Software Engineering Immersive course with GA. We were given a timeline of one week to pick a game from a list of options then re-create it, and I chose Tetris. I found the solo project to be an incredible learning experience in brainstorming, designing, then executing a project from start to finish, and I learned many valuable lessons along the way.
 
 You can find the deployed version of my game here: [Lo-Fi Tetris](https://jacqizee.github.io/SEI-Project-1/)
 
 ![Lo-Fi Tetris Game Preview](./media/preview.png)
 
-## Overview
-This was the first project for the Software Engineering Immersive course with GA. We were given a timeline of one week to pick a game from a list of options then re-create it, and I chose Tetris. I found the solo project to be an incredible learning experience in brainstorming, designing, then executing a project from start to finish, and I learned many valuable lessons along the way.
+* [Brief](#the-brief)
+* [Technologies Used](#technologies-used)
+* [Controls & Features](#controls-&-features)
+* [Instructions](#instructions)
+* [Approach](#approach)
+* [Reflection](#reflection)
+* [Future Features](#future-features)
+* [Credits](#credits)
+
+
+##
 
 ## The Brief
 
@@ -68,7 +80,7 @@ Despite itching to jump into coding, I spent the entire first day on pseudocode 
 
 Once I had mapped out a plan for how I planned to approach each item listed, I allowed myself to get cracking on the coding.
 
-### Starting With The Grid
+### Grid Creation
 
 To start, I wrote up the HTML for the game based off my wireframe, then used JavaScript and DOM manipulation to both create the main grid and mini grid for the game, storing each div created as a cell within an array. Afted adding a sprinkling of basic CSS, I was ready to start writing functions.
 
@@ -141,11 +153,22 @@ To allow the user to be able to move tetronimos horizontally, I had to be consci
 
 ### Tetronimo Rotation
 
+### Line Clear
+
+### Game End
+
 ## Reflection
 
 ### Challenges
 
 ### Key Learnings
+
+## Future Features
+
+If I had more time, these are the features I would have loved to incorporate next:
+* Hard Drop for Tetronimos - this is a common feature in Tetris that I certainly do miss in my game. My approach would be to check the columns the current shape is in, then find which row has the highest paused cell. From there, I would lower the current shape to just above that row by adding to the currentPosition array.
+* Counter-Clockwise Rotation - I have most of the checks in place already with my current rotation function, I think if I had time I would have allowed for rotation both directions.
+* Color-Blind Mode - More of a styling/DOM manipulation challenge, but I would have loved to have had a button that would allow a user to toggle color-blind friendly tetronimo colors.
 
 ## Credits:
 

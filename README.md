@@ -3,7 +3,7 @@
 ## Overview
 This was the first project for the Software Engineering Immersive course with GA. We were given a timeline of one week to pick a game from a list of options then re-create it, and I chose Tetris. I found the solo project to be an incredible learning experience in brainstorming, designing, then executing a project from start to finish, and I learned many valuable lessons along the way.
 
-You can find the deployed version of my game here: [Lo-Fi Tetris](https://jacqizee.github.io/SEI-Project-1_Lo-Fi-Tetris/)
+You can find the deployed version of my game here: [Lo-Fi Tetris](https://jacqizee.github.io/Lo-Fi-Tetris/)
 
 ![Lo-Fi Tetris Game Preview](./media/preview.png)
 

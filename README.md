@@ -3,9 +3,11 @@
 ## Overview
 This was the first project for the Software Engineering Immersive course with GA. We were given a timeline of one week to pick a game from a list of options then re-create it, and I chose Tetris. I found the solo project to be an incredible learning experience in brainstorming, designing, then executing a project from start to finish, and I learned many valuable lessons along the way.
 
-You can find the deployed version of my game here: [Lo-Fi Tetris](https://jacqizee.github.io/SEI-Project-1/)
+You can find the deployed version of my game here: [Lo-Fi Tetris](https://jacqizee.github.io/Lo-Fi-Tetris/)
 
 ![Lo-Fi Tetris Game Preview](./media/preview.png)
+
+## Navigation
 
 * [Brief](#the-brief)
 * [Technologies Used](#technologies-used)
@@ -15,9 +17,6 @@ You can find the deployed version of my game here: [Lo-Fi Tetris](https://jacqiz
 * [Reflection](#reflection)
 * [Future Features](#future-features)
 * [Credits](#credits)
-
-
-##
 
 ## The Brief
 
@@ -153,15 +152,25 @@ To allow the user to be able to move tetronimos horizontally, I had to be consci
 
 ### Tetronimo Rotation
 
+
+
 ### Line Clear
 
+
+
 ### Game End
+
+
 
 ## Reflection
 
 ### Challenges
 
+
+
 ### Key Learnings
+
+
 
 ## Future Features
 

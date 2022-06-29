@@ -1,4 +1,4 @@
-# Project 1: Lo-Fi Tetris
+# Lo-Fi Tetris
 
 ## Overview
 This was the first project for the Software Engineering Immersive course with GA. We were given a timeline of one week to pick a game from a list of options then re-create it, and I chose Tetris. I found the solo project to be an incredible learning experience in brainstorming, designing, then executing a project from start to finish, and I learned many valuable lessons along the way.
@@ -194,6 +194,47 @@ To address this, I had to center each tetronimo within the matrix. If there were
     if (rotationIndex[0] > 0 && rotationIndex[3] < 9 && !columnFour.some(index => mainCells[index].className.includes('active'))) {
       rotationArrayBase = rotationArrayBase.map(index => index - 1)
     }
+```
+
+Then, I mapped the new rotated position for the piece, shifting the piece if it would collide with any walls or the floor, as well as any fixed pieces to achieve rotation.
+
+```
+// Update Current Position to Rotated Position
+    for (let i = 0; i < rotationArray.length; i++) {
+      if (rotationArray[0].includes(tempPosition[i])) {
+        tempPosition[i] = rotatedArray[0][rotationArray[0].indexOf(tempPosition[i])]
+      } else if (rotationArray[1].includes(tempPosition[i])) {
+        tempPosition[i] = rotatedArray[1][rotationArray[1].indexOf(tempPosition[i])]
+      } else if (rotationArray[2].includes(tempPosition[i])) {
+        tempPosition[i] = rotatedArray[2][rotationArray[2].indexOf(tempPosition[i])]
+      } else if (rotationArray[3].includes(tempPosition[i])) {
+        tempPosition[i] = rotatedArray[3][rotationArray[3].indexOf(tempPosition[i])]
+      }
+    } tempPosition.sort((a, b) => a - b)
+
+    // Prevent Rotation Beyond Bottom of Grid
+    if (tempPosition.some(index => index > mainCellCount)) {
+      if (tempPosition.some(index => index > mainCellCount + mainWidth)) {
+        tempPosition = tempPosition.map(index => index - (mainWidth * 2))
+      } else {
+        tempPosition = tempPosition.map(index => index - mainWidth)
+      }
+    }
+
+    // Prevent Rotation if Paused Piece in the Way
+    if (!tempPosition.some(index => mainCells[index].className.includes('paused'))) {
+      currentTetro.currentPosition = tempPosition
+    } else if (!tempPosition.some(index => mainCells[index + 1].className.includes('paused'))) {
+      currentTetro.currentPosition = tempPosition.map(index => index + 1)
+    } else if (!tempPosition.some(index => mainCells[index - 1].className.includes('paused'))) {
+      currentTetro.currentPosition = tempPosition.map(index => index - 1)
+    } else if (!tempPosition.some(index => mainCells[index + 1].className.includes('paused'))) {
+      currentTetro.currentPosition = tempPosition.map(index => index + 2)
+    } else if (!tempPosition.some(index => mainCells[index - 1].className.includes('paused'))) {
+      currentTetro.currentPosition = tempPosition.map(index => index - 2)
+    }
+
+    addTetromino()
 ```
 
 ### Line Clear

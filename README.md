@@ -85,20 +85,34 @@ To start, I wrote up the HTML for the game based off my wireframe, then used Jav
 
 <img src="./media/grid.png" alt="tetris grid example" width="200"/>
 
+```
+function createGrid(grid, cellCount, cellArray) {
+  for (let i = 0; i < cellCount; i++) {
+    const cell = document.createElement('div')
+    grid.appendChild(cell)
+    cell.dataset.index = i
+    cellArray.push(cell)
+  }
+}
+  
+createGrid(mainGrid, mainCellCount, mainCells)
+createGrid(nextGrid, nextCellCount, nextCells)
+```
+
 ### Creating and Generating Tetronimos
 
 To create and generate tetronimos in JavaScript, I created a class that would allow me to easily create objects and assign values for their different attributes. Initially, I had a single array that I used to store the Tetronimos, and would access each Tetronimo via a randomly generated number from 0 to 6.
 
 ```
-  class Tetromino {
-    constructor(startingPosition, shape) {
-      this.currentPosition = startingPosition,
-      this.startingPosition = startingPosition,
-      this.nextPosition = [],
-      this.active = shape + '-active',
-      this.inactive = shape + '-paused'
-    }
+class Tetromino {
+  constructor(startingPosition, shape) {
+    this.currentPosition = startingPosition,
+    this.startingPosition = startingPosition,
+    this.nextPosition = [],
+    this.active = shape + '-active',
+    this.inactive = shape + '-paused'
   }
+}
 
 const tetrominoO = new Tetromino([4, 5, 14, 15], 'red')
 ..
@@ -110,7 +124,7 @@ nextShape === null ? currentTetro = allTetrominos[Math.floor((Math.random() * 7)
 nextShape = allTetrominos[Math.floor((Math.random() * 7))]
 ```
 
-Later on, I removed this static array and instead generated a new tetronimo object and re-assigned it to `currentTetro`. This was cleaner than re-using the same objects, and saved me from having to re-set any object values. I used a switch statement function as it was more readable and cleaner than multiple if .. else statements.
+Later on, I removed this static array and instead generated a new tetronimo object and re-assigned it to `currentTetro`. This was cleaner than re-using the same objects, and saved me from having to re-set any object values. I used a switch statement function as it was more readable and cleaner than multiple if .. else statements. 
 
 ```
   function generateTetro() {
@@ -152,32 +166,115 @@ To allow the user to be able to move tetronimos horizontally, I had to be consci
 
 ### Tetronimo Rotation
 
+Tetronimo rotation was by far the most challenging part of this project to tackle. I originally saw two ways to achieve this either by:
+  1. hard coding each tetronimo's rotations and then rotating the pieces by keeping track of which rotated position the piece was in, or
+  2. creating a 'matrix' of some sort that tracks where a tetronimo is located, then rotating all active cells by a set amount
 
+I decided on method 2, since it felt more challenging but would allow me to rotate all tetronimo shapes with the same function, rather than having to treat each piece differently. Rotation definitely challenged me in many ways, I had to account for a lot of variables: collision with the walls/bottom, collision with other pieces, and, eventually, centering a piece within the matrix to rotate it about a center axis.
+
+One issue I had was addressing rotating about a centered axis for pieces, as I had originally rotated from the corner edge. I didn't realize that this would shift pieces down a row or two with each full rotation, which impacted the gameplay quite a bit! Tetronimos would reach the bottom much faster when rotated, while centered pieces did not:
+
+![Tetronimo Rotation Figure](./media/tetronimo-rotation.png)
+
+To address this, I had to center each tetronimo within the matrix. If there were two or more empty rows/columns in a matrix, the piece would be shifted over one or two rows/columns in the matrix:
+
+```
+// Vertically Centering Tetromino in Rotation Array to Prevent Piece Shift Right
+    let rotationArrayBase = [lowestColumn, lowestColumn + 1, lowestColumn + 2, lowestColumn + 3]
+    if (rotationArrayBase[0] > mainWidth - 1 && !rotationArrayBase.map(index => index + mainWidth * 2).some(index => mainCells[index].className.includes('active'))) {
+      if (rotationArrayBase[0] > mainWidth * 2 - 1 && !rotationArrayBase.map(index => index + mainWidth).some(index => mainCells[index].className.includes('active'))) {
+        rotationArrayBase = rotationArrayBase.map(index => index - mainWidth * 2)
+      } else { 
+        rotationArrayBase = rotationArrayBase.map(index => index - mainWidth)
+      }
+    }
+
+    // Horizontally Centering Tetromino in Rotation Array to Prevent Piece Shift Down
+    const columnFour = [rotationArrayBase[3], rotationArrayBase[3] + mainWidth, rotationArrayBase[3] + mainWidth * 2, rotationArrayBase[3] + mainWidth * 3]
+    if (rotationIndex[0] > 0 && rotationIndex[3] < 9 && !columnFour.some(index => mainCells[index].className.includes('active'))) {
+      rotationArrayBase = rotationArrayBase.map(index => index - 1)
+    }
+```
 
 ### Line Clear
 
+To clear lines when full, I iterated through each row from top to bottom, checking if every cell in a row has a class name of 'paused', if yes, then I knew this was a line to be cleared. I used a while loop to keep clearing lines until all full lines were cleared, with each row inheriting the class names of the row above it.
 
+```
+// Iterate through Array of Rows until all Full Rows are Cleared and Shifted, Top to Bottom
+for (let row = mainHeight - 1; row > 0; row--) {
+  while (gridRows[row].every(cell => cell.className.includes('paused'))) {
+    audioLineClear.play()
+    let currentRow = row
+    while (currentRow > 0) {
+      for (let column = 0; column < mainWidth; column++) {
+        gridRows[currentRow][column].className = gridRows[currentRow - 1][column].className
+      }
+      currentRow -= 1
+    }
+```
+
+The score is then incremented with a multiplier if multiple lines are cleared at once, and the player's level is increased if they meet or exceed the score threshold, which then increases the interval speed at which pieces fall.
+
+```
+// Increase Player Score, the More Lines Cleared at Once, the More Points Scored
+playerScore += 50 * multiplier
+multiplier++
+playerLines += 1
+levelCheck()
+updateSpans()
+
+----
+
+function levelCheck() {
+  if (playerScore >= pointsToLevel) {
+    playerLevel++
+    audioLevelUp.play()
+    pointsToLevel += 500
+    intervalSpeed *= 0.90
+  }
+}
+```
 
 ### Game End
 
+Game end was handled by the releaseTetronimo function. This function checks if there is space for a tetronimo to be released and if not, it adds the last tetronimo piece then exits out of the function interval, effectively ending the game. It then displays a modal with the final score, and updates the local high score if the achieved score is higher.
 
+```
+if (currentTetro.startingPosition.some(index => mainCells[index].className.includes('paused'))) { // Game Over
+  audioGameOver.play()
+  currentTetro.currentPosition.forEach(index => mainCells[index].classList.add(currentTetro.active))
+  gamePause()
+  if (playerScore > highScore) {
+    localStorage.setItem('highscore', playerScore)
+    highScoreSpan.innerHTML = playerScore
+    highScoreMsg.style.display = 'block'
+  }
+  modalContainer.style.display = 'block'
+  startButton.innerHTML = 'Replay'
+  return
+}
+```
 
 ## Reflection
 
 ### Challenges
 
-
+The greatest challenge of this project was handling tetronimo rotation and thinking through the logic of how to create working functions. Since this was my first large project involving JavaScript, HTML, and CSS, I found I needed to allocate my time wisely to ensure I was tackling key problems for game function (like piece rotation or line clearing), rather than letting myself get distracted with styling or small features like music or theming/styling.
 
 ### Key Learnings
 
+This project helped put to practice several different element of coding, such as using classes, switch statements, control flow, and manipulating the DOM to create and update different elements. I found it very enjoyable to dig away and tackle problems piece by piece, ultimately creating a project I am quite proud of! The satisfaction of seeing all the different functions piece together to make a functional game was very rewarding.
 
+I also learned a lot about the importance of planning and pseudocode. I found that sometimes I would get stuck on a problem and try to tackle it right away, when really I could have benefitted from taking a step away from the code for a moment to think through the logic of a workable solution, then moving on to writing the code. 
 
 ## Future Features
 
 If I had more time, these are the features I would have loved to incorporate next:
-* Hard Drop for Tetronimos - this is a common feature in Tetris that I certainly do miss in my game. My approach would be to check the columns the current shape is in, then find which row has the highest paused cell. From there, I would lower the current shape to just above that row by adding to the currentPosition array.
-* Counter-Clockwise Rotation - I have most of the checks in place already with my current rotation function, I think if I had time I would have allowed for rotation both directions.
-* Color-Blind Mode - More of a styling/DOM manipulation challenge, but I would have loved to have had a button that would allow a user to toggle color-blind friendly tetronimo colors.
+* Hard Drop for Tetronimos - this is a common feature in Tetris that I certainly do miss in my game. My approach would be to check the columns the current shape is in, then find which row has the highest paused cell. From there, I would lower the current shape to just above that row by adding to the currentPosition array
+* Counter-Clockwise Rotation - I have most of the checks in place already with my current rotation function, I think if I had time I would have allowed for rotation both directions
+* Color-Blind Mode - More of a styling/DOM manipulation challenge, but I would have loved to have had a button that would allow a user to toggle color-blind friendly tetronimo colors
+* Rotation Refactoring - I definitely went with more of a brute force solution to rotating with a matrix, I think there could be improments made to the code to clean it up
 
 ## Credits:
 

@@ -164,6 +164,32 @@ To know which tetronimo to move (or whether to generate and drop a new one), I c
 
 To allow the user to be able to move tetronimos horizontally, I had to be conscious of was movement that would wrap the tetronimo on the left or right edges of the grid, and any movement into an existing tetronimo. To prevent this, I used if .. statements that blocked movement left/right if the shape was at all present in the left/right-most column, or if its new position already contains a paused cell.
 
+```
+function moveTetromino(arrowDirection) {
+    if (currentTetro.nextPosition.every(index => index < mainCellCount)) {
+      removeTetromino()
+      if (arrowDirection === 'ArrowDown') {
+        currentTetro.currentPosition.map(index => index + mainWidth)
+        if (!currentTetro.currentPosition.map(index => index + mainWidth).some(index => mainCells[index].className.includes('paused'))) {
+          currentTetro.currentPosition = currentTetro.nextPosition
+        }
+      }
+      if (arrowDirection === 'ArrowRight' && !currentTetro.currentPosition.some(index => (index % mainWidth) === 9)) {
+        if (!currentTetro.currentPosition.map(index => index + 1).some(index => mainCells[index].className.includes('paused'))) {
+          currentTetro.currentPosition = currentTetro.currentPosition.map(index => index + 1)
+        }
+      }
+      if (arrowDirection === 'ArrowLeft' && !currentTetro.currentPosition.some(index => (index % mainWidth) === 0)) {
+        if (!currentTetro.currentPosition.map(index => index - 1).some(index => mainCells[index].className.includes('paused'))) {
+          currentTetro.currentPosition = currentTetro.currentPosition.map(index => index - 1)
+        }
+      }
+      addTetromino()
+    }
+  }
+
+```
+
 ### Tetronimo Rotation
 
 Tetronimo rotation was by far the most challenging part of this project to tackle. I originally saw two ways to achieve this either by:

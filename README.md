@@ -29,8 +29,8 @@ You can find the deployed version of my game here: [Lo-Fi Tetris](https://jacqiz
 * Use semantic markup for HTML and CSS
 
 **Tetris-Specific Brief:**
-* The game should stop if a Tetrimino fills the highest row of the game board
-* The player should be able to rotate each Tetrimino about its own axis
+* The game should stop if a Tetromino fills the highest row of the game board
+* The player should be able to rotate each Tetrimono about its own axis
 * If a line is completed it should be removed and the pieces above should take its place
 
 ## Technologies Used
@@ -58,20 +58,20 @@ You can find the deployed version of my game here: [Lo-Fi Tetris](https://jacqiz
 * Speed Increases as Player Levels Up
 
 ## Instructions
-* Tetris is a puzzle game where the player has to fit different shaped blocks (called Tetriminos) together so that they make a complete line across the playing board. Once a line is achieved it is removed from the game board and the player's score is increased
-* The player can move the Tetriminos left and right and rotate them clockwise in 90º increments
-* The aim of the game is to get as many points as possible before the game board is filled with Tetriminos
+* Tetris is a puzzle game where the player has to fit different shaped blocks (called Tetrominos) together so that they make a complete line across the playing board. Once a line is achieved it is removed from the game board and the player's score is increased
+* The player can move the Tetrominos left and right and rotate them clockwise in 90º increments
+* The aim of the game is to get as many points as possible before the game board is filled with Tetrominos
 
 ## Approach
 Selecting Tetris as my game of choice for the project definitely put me way outside my comfort zone, but I selected it to push myself to see if I could rise to the daunting challenge within a week. I personally also really enjoy playing Tetris, so was particularly drawn and eager to recreate it.
 
 ### Planning: Wireframing and Pseudocode
 
-Before jumping into coding, I played several different versions of Tetris online to remind myself of the gameplay and to note features available that I would want to replicate for my game. From there, I drew out a wireframe to map the different semantic and non-semantic HTML elements, then moved into pseudocoding how I thought I should approach the problem.
+Before jumping into coding, I played several different versions of Tetris online to remind myself of the gameplay and to note features available that I would want to replicate for my game. From there, I drew out a wireframe to map the different semantic and non-semantic HTML elements, then moved into pseudo-coding how I thought I should approach the problem.
 
 ![tetris-wireframe](./media/wireframe.png)
 
-Despite itching to jump into coding, I spent the entire first day on pseudocode to plan out my approach to the project, as I felt if I skipped/rushed this step I was bound to hit many roadblocks. Initally I mapped out that I would need:
+Despite itching to jump into coding, I spent the entire first day on pseudocode to plan out my approach to the project, as I felt if I skipped/rushed this step I was bound to hit many roadblocks. Initially I mapped out that I would need:
 * An interval which lowers the active tetromino by one row every second or so. The interval would need to check if the piece could be lowered, and if not i.e. reaching the bottom of the grid or another tetromino piece, freeze the tetromino in place.
 * To randomly generate a tetromino and be able to move it left, right, and down as it falls down the board
 * To clear rows when full, shifting all elements above the row down
@@ -81,7 +81,7 @@ Once I had mapped out a plan for how I planned to approach each item listed, I a
 
 ### Grid Creation
 
-To start, I wrote up the HTML for the game based off my wireframe, then used JavaScript and DOM manipulation to both create the main grid and mini grid for the game, storing each div created as a cell within an array. Afted adding a sprinkling of basic CSS, I was ready to start writing functions.
+To start, I wrote up the HTML for the game based off my wireframe, then used JavaScript and DOM manipulation to both create the main grid and mini grid for the game, storing each div created as a cell within an array. After adding a sprinkling of basic CSS, I was ready to start writing functions.
 
 <img src="./media/grid.png" alt="tetris grid example" width="200"/>
 
@@ -335,13 +335,20 @@ This project helped put to practice several different element of coding, such as
 
 I also learned a lot about the importance of planning and pseudocode. I found that sometimes I would get stuck on a problem and try to tackle it right away, when really I could have benefitted from taking a step away from the code for a moment to think through the logic of a workable solution, then moving on to writing the code. 
 
+### Wins
+
+I think some of the key wins in this project include:
+* Learning to manipulate cells within a flex-grid
+* Working out the logic for features like tetromino rotation, line clearing, and movement with the arrow keys
+* Styling with CSS to make a visually appealing game
+
 ## Future Features
 
 If I had more time, these are the features I would have loved to incorporate next:
 * Hard Drop for Tetronimos - this is a common feature in Tetris that I certainly do miss in my game. My approach would be to check the columns the current shape is in, then find which row has the highest paused cell. From there, I would lower the current shape to just above that row by adding to the currentPosition array
 * Counter-Clockwise Rotation - I have most of the checks in place already with my current rotation function, I think if I had time I would have allowed for rotation both directions
 * Color-Blind Mode - More of a styling/DOM manipulation challenge, but I would have loved to have had a button that would allow a user to toggle color-blind friendly tetronimo colors
-* Rotation Refactoring - I definitely went with more of a brute force solution to rotating with a matrix, I think there could be improments made to the code to clean it up
+* Rotation Refactoring - I definitely went with more of a brute force solution to rotating with a matrix, I think there could be improvements made to the code to clean it up
 
 ## Credits:
 

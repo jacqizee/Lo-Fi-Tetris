@@ -1,7 +1,7 @@
 # Lo-Fi Tetris
 
 ## Overview
-This was the first project for the Software Engineering Immersive course with GA. We were given a timeline of one week to pick a game from a list of options then re-create it, and I chose Tetris. I found the solo project to be an incredible learning experience in brainstorming, designing, then executing a project from start to finish, and I learned many valuable lessons along the way.
+This was the first project for the Software Engineering Immersive course with GA. We were given a timeline of one week to pick a game from a list of options then recreate it, and I chose Tetris. I found the solo project to be an incredible learning experience in brainstorming, designing, then executing a project from start to finish, and I learned many valuable lessons along the way.
 
 You can find the deployed version of my game here: [Lo-Fi Tetris](https://jacqizee.github.io/Lo-Fi-Tetris/)
 
@@ -30,7 +30,7 @@ You can find the deployed version of my game here: [Lo-Fi Tetris](https://jacqiz
 
 **Tetris-Specific Brief:**
 * The game should stop if a Tetromino fills the highest row of the game board
-* The player should be able to rotate each Tetrimono about its own axis
+* The player should be able to rotate each Tetromino about its own axis
 * If a line is completed it should be removed and the pieces above should take its place
 
 ## Technologies Used
@@ -60,10 +60,10 @@ You can find the deployed version of my game here: [Lo-Fi Tetris](https://jacqiz
 ## Instructions
 * Tetris is a puzzle game where the player has to fit different shaped blocks (called Tetrominos) together so that they make a complete line across the playing board. Once a line is achieved it is removed from the game board and the player's score is increased
 * The player can move the Tetrominos left and right and rotate them clockwise in 90º increments
-* The aim of the game is to get as many points as possible before the game board is filled with Tetrominos
+* The aim of the game is to get as many points as possible before the game board is filled with Tetrominoes
 
 ## Approach
-Selecting Tetris as my game of choice for the project definitely put me way outside my comfort zone, but I selected it to push myself to see if I could rise to the daunting challenge within a week. I personally also really enjoy playing Tetris, so was particularly drawn and eager to recreate it.
+Selecting Tetris as my game of choice for the project definitely put me way outside my comfort zone, but I selected it to push myself to see if I could rise to the daunting challenge within a week. I personally also really enjoy playing Tetris, so I was particularly drawn and eager to recreate it.
 
 ### Planning: Wireframing and Pseudocode
 
@@ -81,7 +81,7 @@ Once I had mapped out a plan for how I planned to approach each item listed, I a
 
 ### Grid Creation
 
-To start, I wrote up the HTML for the game based off my wireframe, then used JavaScript and DOM manipulation to both create the main grid and mini grid for the game, storing each div created as a cell within an array. After adding a sprinkling of basic CSS, I was ready to start writing functions.
+To start, I wrote up the HTML for the game based on my wireframe, then used JavaScript and DOM manipulation to both create the main grid and mini grid for the game, storing each div created as a cell within an array. After adding a sprinkling of basic CSS, I was ready to start writing functions.
 
 <img src="./media/grid.png" alt="tetris grid example" width="200"/>
 
@@ -99,9 +99,9 @@ createGrid(mainGrid, mainCellCount, mainCells)
 createGrid(nextGrid, nextCellCount, nextCells)
 ```
 
-### Creating and Generating Tetronimos
+### Creating and Generating Tetrominoes
 
-To create and generate tetronimos in JavaScript, I created a class that would allow me to easily create objects and assign values for their different attributes. Initially, I had a single array that I used to store the Tetronimos, and would access each Tetronimo via a randomly generated number from 0 to 6.
+To create and generate tetrominos in JavaScript, I created a class that would allow me to easily create objects and assign values for their different attributes. Initially, I had a single array that I used to store the Tetrominoes, and would access each Tetromino via a randomly generated number from 0 to 6.
 
 ```
 class Tetromino {
@@ -124,7 +124,7 @@ nextShape === null ? currentTetro = allTetrominos[Math.floor((Math.random() * 7)
 nextShape = allTetrominos[Math.floor((Math.random() * 7))]
 ```
 
-Later on, I removed this static array and instead generated a new tetronimo object and re-assigned it to `currentTetro`. This was cleaner than re-using the same objects, and saved me from having to re-set any object values. I used a switch statement function as it was more readable and cleaner than multiple if .. else statements. 
+Later on, I removed this static array and instead generated a new tetromino object and re-assigned it to `currentTetro`. This was cleaner than re-using the same objects, and saved me from having to reset any object values. I used a switch statement function as it was more readable and cleaner than multiple if .. else statements. 
 
 ```
   function generateTetro() {
@@ -152,17 +152,17 @@ nextTetro = generateTetro()
 
 ### Dropping the Tetronimo
 
-To drop a tetronimo and move it down the screen, I used a setTimeout interval. In contrast to setInterval, I knew setTimeout would allow me to more easily update the speed of the tetronimo drop/interval as the player levels up. Outside of just moving the active tetronimo, this interval was also where a lot of the heavy lifting was executed: 
-* Generating new tetronimos
-* Generating the upcoming tetronimo and displaying it in the mini grid
-* Checking whether the game should end (if no space for a new tetronimo)
-* Checking if any lines needed to be cleared when the tetronimo reaches the bottom
+To drop a tetromino and move it down the screen, I used a setTimeout interval. In contrast to setInterval, I knew setTimeout would allow me to more easily update the speed of the tetromino drop/interval as the player levels up. Outside of just moving the active tetromino, this interval was also where a lot of the heavy lifting was executed: 
+* Generating new tetrominoes
+* Generating the upcoming tetromino and displaying it in the mini grid
+* Checking whether the game should end (if no space for a new tetromino)
+* Checking if any lines needed to be cleared when the tetromino reaches the bottom
 
-To know which tetronimo to move (or whether to generate and drop a new one), I classed tetronimo cells as either 'active' or 'paused'. At the start of the interval if active cells were present, that would signal to move that shape down a row. If active cells were absent, then it would signal that we needed to generate a new shape and drop it from the top. Checks in place would be validated throughout.
+To know which tetromino to move (or whether to generate and drop a new one), I classed tetromino cells as either 'active' or 'paused'. At the start of the interval if active cells were present, that would signal to move that shape down a row. If active cells were absent, then it would signal that we needed to generate a new shape and drop it from the top. Checks in place would be validated throughout.
 
-### Tetronimo Horizontal Movement
+### Tetromino Horizontal Movement
 
-To allow the user to be able to move tetronimos horizontally, I had to be conscious of was movement that would wrap the tetronimo on the left or right edges of the grid, and any movement into an existing tetronimo. To prevent this, I used if .. statements that blocked movement left/right if the shape was at all present in the left/right-most column, or if its new position already contains a paused cell.
+To allow the user to be able to move tetrominoes horizontally, I had to be conscious of any movement that would wrap the tetromino on the left or right edges of the grid, and any movement into an existing tetromino. To prevent this, I used if .. statements that blocked movement left/right if the shape was at all present in the left/right-most column, or if its new position already contained a paused cell.
 
 ```
 function moveTetromino(arrowDirection) {
@@ -190,19 +190,19 @@ function moveTetromino(arrowDirection) {
 
 ```
 
-### Tetronimo Rotation
+### Tetromino Rotation
 
-Tetronimo rotation was by far the most challenging part of this project to tackle. I originally saw two ways to achieve this either by:
+Tetromino rotation was by far the most challenging part of this project to tackle. I originally saw two ways to achieve this either by:
   1. hard coding each tetronimo's rotations and then rotating the pieces by keeping track of which rotated position the piece was in, or
-  2. creating a 'matrix' of some sort that tracks where a tetronimo is located, then rotating all active cells by a set amount
+  2. creating a 'matrix' of some sort that tracks where a tetromino is located, then rotating all active cells by a set amount
 
-I decided on method 2, since it felt more challenging but would allow me to rotate all tetronimo shapes with the same function, rather than having to treat each piece differently. Rotation definitely challenged me in many ways, I had to account for a lot of variables: collision with the walls/bottom, collision with other pieces, and, eventually, centering a piece within the matrix to rotate it about a center axis.
+I decided on method 2, since it felt more challenging but would allow me to rotate all tetromino shapes with the same function, rather than having to treat each piece differently. Rotation definitely challenged me in many ways, I had to account for a lot of variables: collision with the walls/bottom, collision with other pieces, and, eventually, centering a piece within the matrix to rotate it about a center axis.
 
 One issue I had was addressing rotating about a centered axis for pieces, as I had originally rotated from the corner edge. I didn't realize that this would shift pieces down a row or two with each full rotation, which impacted the gameplay quite a bit! Tetronimos would reach the bottom much faster when rotated, while centered pieces did not:
 
-![Tetronimo Rotation Figure](./media/tetronimo-rotation.png)
+![Tetromino Rotation Figure](./media/tetronimo-rotation.png)
 
-To address this, I had to center each tetronimo within the matrix. If there were two or more empty rows/columns in a matrix, the piece would be shifted over one or two rows/columns in the matrix:
+To address this, I had to center each tetromino within the matrix. If there were two or more empty rows/columns in a matrix, the piece would be shifted over one or two rows/columns in the matrix:
 
 ```
 // Vertically Centering Tetromino in Rotation Array to Prevent Piece Shift Right
@@ -305,7 +305,7 @@ function levelCheck() {
 
 ### Game End
 
-Game end was handled by the releaseTetronimo function. This function checks if there is space for a tetronimo to be released and if not, it adds the last tetronimo piece then exits out of the function interval, effectively ending the game. It then displays a modal with the final score, and updates the local high score if the achieved score is higher.
+Game end was handled by the releaseTetronimo function. This function checks if there is space for a tetromino to be released and if not, it adds the last tetromino piece then exits out of the function interval, effectively ending the game. It then displays a modal with the final score, and updates the local high score if the achieved score is higher.
 
 ```
 if (currentTetro.startingPosition.some(index => mainCells[index].className.includes('paused'))) { // Game Over
@@ -327,11 +327,11 @@ if (currentTetro.startingPosition.some(index => mainCells[index].className.inclu
 
 ### Challenges
 
-The greatest challenge of this project was handling tetronimo rotation and thinking through the logic of how to create working functions. Since this was my first large project involving JavaScript, HTML, and CSS, I found I needed to allocate my time wisely to ensure I was tackling key problems for game function (like piece rotation or line clearing), rather than letting myself get distracted with styling or small features like music or theming/styling.
+The greatest challenge of this project was handling tetromino rotation and thinking through the logic of how to create working functions. Since this was my first large project involving JavaScript, HTML, and CSS, I found I needed to allocate my time wisely to ensure I was tackling key problems for game function (like piece rotation or line clearing), rather than letting myself get distracted with styling or small features like music or theming/styling.
 
 ### Key Learnings
 
-This project helped put to practice several different element of coding, such as using classes, switch statements, control flow, and manipulating the DOM to create and update different elements. I found it very enjoyable to dig away and tackle problems piece by piece, ultimately creating a project I am quite proud of! The satisfaction of seeing all the different functions piece together to make a functional game was very rewarding.
+This project helped put to practice several different elements of coding, such as using classes, switch statements, control flow, and manipulating the DOM to create and update different elements. I found it very enjoyable to dig away and tackle problems piece by piece, ultimately creating a project I am quite proud of! The satisfaction of seeing all the different functions piece together to make a functional game was very rewarding.
 
 I also learned a lot about the importance of planning and pseudocode. I found that sometimes I would get stuck on a problem and try to tackle it right away, when really I could have benefitted from taking a step away from the code for a moment to think through the logic of a workable solution, then moving on to writing the code. 
 
@@ -345,9 +345,9 @@ I think some of the key wins in this project include:
 ## Future Features
 
 If I had more time, these are the features I would have loved to incorporate next:
-* Hard Drop for Tetronimos - this is a common feature in Tetris that I certainly do miss in my game. My approach would be to check the columns the current shape is in, then find which row has the highest paused cell. From there, I would lower the current shape to just above that row by adding to the currentPosition array
+* Hard Drop for Tetrominoes - this is a common feature in Tetris that I certainly do miss in my game. My approach would be to check the columns the current shape is in, then find which row has the highest paused cell. From there, I would lower the current shape to just above that row by adding to the currentPosition array
 * Counter-Clockwise Rotation - I have most of the checks in place already with my current rotation function, I think if I had time I would have allowed for rotation both directions
-* Color-Blind Mode - More of a styling/DOM manipulation challenge, but I would have loved to have had a button that would allow a user to toggle color-blind friendly tetronimo colors
+* Color-Blind Mode - More of a styling/DOM manipulation challenge, but I would have loved to have had a button that would allow a user to toggle color-blind friendly tetromino colors
 * Rotation Refactoring - I definitely went with more of a brute force solution to rotating with a matrix, I think there could be improvements made to the code to clean it up
 
 ## Credits:
